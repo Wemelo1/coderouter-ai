@@ -1,2 +1,70 @@
-# coderouter-ai
-A cost-aware AI coding assistant that routes tasks between local and remote models using LangGraph
+# ⚡ CodeRouter AI
+
+A cost-aware AI coding assistant that intelligently routes tasks between a **local model (Ollama)** and a **remote model (Fireworks AI)** based on task complexity — minimizing cost without sacrificing accuracy.
+
+Built for the **AMD Developer Hackathon: ACT II** on lablab.ai.
+
+---
+
+## 🧠 How It Works
+
+```
+User Query
+    ↓
+[Classifier] — Scores complexity 1-5 (runs locally, always free)
+    ↓
+[Router] — Score ≤ 2 → Local | Score > 2 → Remote
+    ↓
+[Local Model]  → Ollama (qwen2.5-coder:1.5b) — FREE
+[Remote Model] → Fireworks AI (llama4-maverick) — Credits
+    ↓
+Response + Cost Breakdown
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- **LangGraph** — agent workflow orchestration
+- **Ollama** — local model runner (free)
+- **Fireworks AI** — remote model API
+- **Streamlit** — web UI
+- **Python** — core language
+
+---
+
+## 🚀 Setup
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/Wemelo1/coderouter-ai
+cd coderouter-ai
+```
+
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Install Ollama + pull model
+```bash
+# Install from https://ollama.com
+ollama pull qwen2.5-coder:1.5b
+```
+
+### 4. Set up environment variables
+```bash
+cp .env.example .env
+# Add your FIREWORKS_API_KEY to .env
+```
+
+### 5. Run the app
+```bash
+streamlit run app.py
+```
+
+---
+
+## 👥 Team
+
+Built by Team CodeRouter AI for AMD Developer Hackathon ACT II
