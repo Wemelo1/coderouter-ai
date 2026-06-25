@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from agent.classifier import classify_complexity
 from agent.router import route_query
 from models.local import call_local_model
-from models.remote import call_remote_model
+from models.remote import call_remote_model, RemoteModelError
 from utils.cost_tracker import log_query
 
 load_dotenv()
@@ -21,6 +21,7 @@ class AgentState(TypedDict):
     tokens: int
     cost_saved: float
     cost_incurred: float
+    fallback_used: bool
 
 # ─── Node Functions ───────────────────────────────────────────────────────────
 
@@ -48,17 +49,37 @@ def local_node(state: AgentState) -> AgentState:
     }
 
 def remote_node(state: AgentState) -> AgentState:
-    """Handles query with Fireworks AI remote model."""
-    result = call_remote_model(state["query"])
-    log_query(state["query"], state["complexity_score"], "remote", result)
-    return {
-        **state,
-        "response": result["response"],
-        "model_used": result["model_used"],
-        "tokens": result["tokens"],
-        "cost_saved": result["cost_saved"],
-        "cost_incurred": result["cost_incurred"]
-    }
+    """Handles query with Fireworks AI remote model.
+
+    Falls back to the local model if the remote call fails
+    (e.g. billing issue, rate limit, network outage) so the
+    app doesn't crash on a remote-side problem.
+    """
+    try:
+        result = call_remote_model(state["query"])
+        log_query(state["query"], state["complexity_score"], "remote", result)
+        return {
+            **state,
+            "response": result["response"],
+            "model_used": result["model_used"],
+            "tokens": result["tokens"],
+            "cost_saved": result["cost_saved"],
+            "cost_incurred": result["cost_incurred"],
+            "fallback_used": False
+        }
+    except RemoteModelError as e:
+        print(f"[warning] Remote model failed, falling back to local: {e}")
+        result = call_local_model(state["query"])
+        log_query(state["query"], state["complexity_score"], "local (fallback)", result)
+        return {
+            **state,
+            "response": result["response"],
+            "model_used": f"{result['model_used']} (fallback from remote)",
+            "tokens": result["tokens"],
+            "cost_saved": result["cost_saved"],
+            "cost_incurred": result["cost_incurred"],
+            "fallback_used": True
+        }
 
 # ─── Routing Logic ────────────────────────────────────────────────────────────
 

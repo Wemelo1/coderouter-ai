@@ -24,6 +24,7 @@ Score:"""
     try:
         response = ollama.chat(
             model="qwen2.5-coder:1.5b",
+            options={"temperature": 0},
             messages=[{"role": "user", "content": prompt}]
         )
         score = int(response["message"]["content"].strip()[0])
