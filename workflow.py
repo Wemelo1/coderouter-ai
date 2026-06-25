@@ -2,11 +2,11 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 
-from agent.classifier import classify_complexity
-from agent.router import route_query
-from models.local import call_local_model
-from models.remote import call_remote_model
-from utils.cost_tracker import log_query
+from classifier import classify_complexity
+from router import route_query
+from local import call_local_model
+from remote import call_remote_model
+from cost_tracker import log_query
 
 load_dotenv()
 
