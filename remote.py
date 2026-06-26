@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
 
-FIREWORKS_MODEL = "accounts/fireworks/models/llama4-maverick-instruct-basic"
+FIREWORKS_MODEL = "accounts/fireworks/models/llama-v3p1-8b-instruct"
 COST_PER_1K_TOKENS = 0.0009  # Fireworks AI pricing (USD)
 
 def call_remote_model(query: str) -> dict:
