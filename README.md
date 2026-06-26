@@ -63,8 +63,11 @@ cp .env.example .env
 streamlit run app.py
 ```
 
+
 ---
 
 ## 👥 Team
 
 Built by Team CodeRouter AI for AMD Developer Hackathon ACT II
+## Now to run app
+python server.py

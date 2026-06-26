@@ -1,6 +1,6 @@
 import streamlit as st
 from workflow import coderouter
-from utils.cost_tracker import get_session_stats
+from cost_tracker import get_session_stats
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 
