@@ -22,10 +22,14 @@ def get_session_stats() -> dict:
         return {"total_queries": 0, "local_queries": 0,
                 "remote_queries": 0, "total_saved": 0.0, "total_spent": 0.0}
 
+    # Count fallback as local since it ran on local model
+    local_count = sum(1 for l in session_log if "local" in l["routed_to"])
+    remote_count = sum(1 for l in session_log if l["routed_to"] == "remote")
+
     return {
         "total_queries": len(session_log),
-        "local_queries": sum(1 for l in session_log if l["routed_to"] == "local"),
-        "remote_queries": sum(1 for l in session_log if l["routed_to"] == "remote"),
+        "local_queries": local_count,
+        "remote_queries": remote_count,
         "total_saved": round(sum(l["cost_saved"] for l in session_log), 6),
         "total_spent": round(sum(l["cost_incurred"] for l in session_log), 6)
     }
