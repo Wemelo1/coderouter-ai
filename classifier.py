@@ -25,7 +25,8 @@ Score:"""
         response = ollama.chat(
             model="qwen2.5-coder:1.5b",
             options={"temperature": 0},
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            options={"temperature": 0}
         )
         score = int(response["message"]["content"].strip()[0])
         return max(1, min(5, score))  # Clamp between 1-5
