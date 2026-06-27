@@ -57,7 +57,12 @@ class ServerHandler(SimpleHTTPRequestHandler):
 
         if self.path == '/':
             self.path = '/code.html'
-        return super().do_GET()
+
+        try:
+            return super().do_GET()
+        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
+            # Client disconnected mid-response — safe to ignore
+            pass
 
     def do_POST(self):
         # ─── API Endpoints ───────────────────────────────────────────────────
