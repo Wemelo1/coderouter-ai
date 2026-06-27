@@ -248,7 +248,7 @@
   .input-row button:disabled { opacity: .35; cursor: not-allowed; transform: none; }
 
   .stats-col {
-    width: 260px;
+    width: 290px;
     flex-shrink: 0;
     background: var(--surface);
     border-left: 1px solid var(--border);
@@ -337,6 +337,163 @@
     margin: 4px 0;
   }
 
+  /* 📜 Query History Styles */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    max-height: 380px;
+    padding-right: 2px;
+  }
+  .history-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .history-item:hover {
+    border-color: var(--primary);
+    background: var(--surface-3);
+    transform: translateY(-1px);
+  }
+  .history-item .hist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+  .history-item .hist-query {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .history-item .hist-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 6px;
+  }
+  .history-item .hist-badge-local { color: var(--green); }
+  .history-item .hist-badge-remote { color: var(--red); }
+
+  /* 🔑 Auth Modal Overlay */
+  .auth-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(14, 14, 26, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 380px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes scaleIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .auth-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dim);
+    transition: all 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .auth-tab.active {
+    color: var(--text);
+    border-bottom-color: var(--primary);
+  }
+  .auth-form {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .auth-form.active {
+    display: flex;
+  }
+  .auth-form .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .auth-form label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .auth-form input {
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .auth-form input:focus { border-color: var(--primary); }
+  .auth-form button {
+    margin-top: 6px;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .auth-form button:hover { opacity: 0.9; }
+  .auth-form button:active { transform: scale(0.97); }
+  .auth-error {
+    color: var(--red);
+    font-size: 12px;
+    text-align: center;
+    margin-top: 8px;
+    display: none;
+  }
+
   @media (max-width: 768px) {
     .stats-col { display: none; }
     #chat { padding: 16px; }
@@ -347,10 +504,50 @@
 </head>
 <body>
 
+<!-- 🔑 Login / Register Overlay -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-title">⚡ CodeRouter AI</div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+    
+    <!-- Login Form -->
+    <form class="auth-form active" id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+      <div class="field">
+        <label for="loginUser">Username</label>
+        <input type="text" id="loginUser" required autofocus autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" required autocomplete="current-password">
+      </div>
+      <button type="submit">Sign In</button>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form" id="registerForm" onsubmit="handleAuthSubmit(event, 'register')">
+      <div class="field">
+        <label for="regUser">Username</label>
+        <input type="text" id="regUser" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="regPass">Password</label>
+        <input type="password" id="regPass" required autocomplete="new-password">
+      </div>
+      <button type="submit">Create Account</button>
+    </form>
+
+    <div class="auth-error" id="authError"></div>
+  </div>
+</div>
+
 <header>
   <div class="logo">⚡</div>
   <h1>CodeRouter AI</h1>
   <span class="badge">v2.0</span>
+  <span class="badge" id="userBadge" style="display:none; background:var(--primary-dark); color:#fff; text-transform:none;"></span>
   <span class="spacer"></span>
   <span style="font-size:11px;color:var(--text-dim);display:flex;gap:10px">
     <span>🟢 Free</span>
@@ -383,8 +580,11 @@
     </div>
   </div>
 
-  <div class="stats-col" id="statsCol">
-    <h3>Session Stats</h3>
+  <div class="stats-col" id="statsCol" style="display: none;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Session Stats</h3>
+      <button onclick="logout()" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:11px; text-decoration:underline;">Logout</button>
+    </div>
 
     <div class="stat-card">
       <div class="label">Total Queries</div>
@@ -418,6 +618,12 @@
         <span id="statCount">0 / 0</span>
       </div>
     </div>
+
+    <div class="divider"></div>
+    <h3>Query History</h3>
+    <div class="history-list" id="historyList">
+      <div style="font-size:12px;color:var(--text-dim);text-align:center;padding:10px">No queries logged yet.</div>
+    </div>
   </div>
 </div>
 
@@ -436,10 +642,100 @@
   const elBar = document.getElementById('statBar');
   const elPct = document.getElementById('statPct');
   const elCount = document.getElementById('statCount');
+  
+  const authOverlay = document.getElementById('authOverlay');
+  const userBadge = document.getElementById('userBadge');
+  const statsCol = document.getElementById('statsCol');
+  const authError = document.getElementById('authError');
+
+  // ─── Authentication Handlers ────────────────────────────────────────────────
+
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(el => el.classList.remove('active'));
+    authError.style.display = 'none';
+
+    if (tab === 'login') {
+      document.querySelector('.auth-tabs div:nth-child(1)').classList.add('active');
+      document.getElementById('loginForm').classList.add('active');
+      document.getElementById('loginUser').focus();
+    } else {
+      document.querySelector('.auth-tabs div:nth-child(2)').classList.add('active');
+      document.getElementById('registerForm').classList.add('active');
+      document.getElementById('regUser').focus();
+    }
+  }
+
+  async function handleAuthSubmit(e, action) {
+    e.preventDefault();
+    authError.style.display = 'none';
+    
+    const u = document.getElementById(action === 'login' ? 'loginUser' : 'regUser').value;
+    const p = document.getElementById(action === 'login' ? 'loginPass' : 'regPass').value;
+
+    const endpoint = action === 'login' ? '/api/login' : '/api/register';
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+
+      if (action === 'register') {
+        alert('Account created! Please log in.');
+        switchAuthTab('login');
+      } else {
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('username', data.username);
+        initApp();
+      }
+    } catch (err) {
+      authError.textContent = err.message;
+      authError.style.display = 'block';
+    }
+  }
+
+  function initApp() {
+    authOverlay.style.display = 'none';
+    statsCol.style.display = 'flex';
+    
+    const username = sessionStorage.getItem('username');
+    userBadge.textContent = '👤 ' + username;
+    userBadge.style.display = 'inline-block';
+    
+    fetchStats();
+    fetchHistory();
+  }
+
+  async function logout() {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch('/api/logout', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+      } catch (_) {}
+    }
+    sessionStorage.clear();
+    location.reload();
+  }
+
+  // ─── Query History & Stats ──────────────────────────────────────────────────
 
   async function fetchStats() {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
     try {
-      const res = await fetch('/api/stats');
+      const res = await fetch('/api/stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.status === 401) { logout(); return; }
       if (!res.ok) return;
       const s = await res.json();
       elTotal.textContent = s.total_queries;
@@ -453,6 +749,61 @@
       elCount.textContent = s.local_queries + ' / ' + s.total_queries;
     } catch (_) {}
   }
+
+  async function fetchHistory() {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+    try {
+      const res = await fetch('/api/history', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.status === 401) { logout(); return; }
+      if (!res.ok) return;
+      const data = await res.json();
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+      if (!data.history || data.history.length === 0) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--text-dim);text-align:center;padding:10px">No queries logged yet.</div>';
+        return;
+      }
+      data.history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        const isLocal = item.routed_to.toLowerCase().includes('local');
+        const badgeClass = isLocal ? 'hist-badge-local' : 'hist-badge-remote';
+        const badgeText = isLocal ? '🟢 Local' : '🔴 Remote';
+        
+        div.innerHTML = `
+          <div class="hist-header">
+            <span class="${badgeClass}">${badgeText}</span>
+            <span>${item.timestamp}</span>
+          </div>
+          <div class="hist-query">${escapeHtml(item.query)}</div>
+          <div class="hist-meta">
+            <span>Complexity: ${item.complexity}/5</span>
+            <span>·</span>
+            <span>Tokens: ${item.tokens}</span>
+          </div>
+        `;
+        div.onclick = () => {
+          input.value = item.query;
+          input.focus();
+        };
+        list.appendChild(div);
+      });
+    } catch (_) {}
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // ─── Chat Routing & Message rendering ────────────────────────────────────────
 
   function addMessage(role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred) {
     welcome.style.display = 'none';
@@ -521,6 +872,12 @@
     const text = input.value.trim();
     if (!text) return false;
 
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      logout();
+      return false;
+    }
+
     addMessage('user', text);
     input.value = '';
     sendBtn.disabled = true;
@@ -529,9 +886,13 @@
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ query: text })
       });
+      if (res.status === 401) { logout(); return false; }
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
 
       const data = await res.json();
@@ -546,6 +907,7 @@
         data.cost_incurred.toFixed(6)
       );
       fetchStats();
+      fetchHistory();
     } catch (err) {
       handleError(err);
     }
@@ -555,7 +917,12 @@
     return false;
   }
 
-  fetchStats();
+  // ─── Initialize Check ────────────────────────────────────────────────────────
+
+  const sessionToken = sessionStorage.getItem('token');
+  if (sessionToken) {
+    initApp();
+  }
 </script>
 </body>
 </html>

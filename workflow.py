@@ -2,7 +2,7 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 
-from classifier import classify_complexity
+from agent.classifier import classify_complexity
 from router import route_query
 from local import call_local_model
 from remote import call_remote_model
@@ -14,6 +14,7 @@ load_dotenv()
 
 class AgentState(TypedDict):
     query: str
+    user_id: int
     complexity_score: int
     model_choice: str
     response: str
@@ -35,7 +36,7 @@ def router_node(state: AgentState) -> AgentState:
 
 def local_node(state: AgentState) -> AgentState:
     result = call_local_model(state["query"])
-    log_query(state["query"], state["complexity_score"], "local", result)
+    log_query(state["user_id"], state["query"], state["complexity_score"], "local", result)
     return {
         **state,
         "response": result["response"],
@@ -50,7 +51,7 @@ def remote_node(state: AgentState) -> AgentState:
     """Handles query with Fireworks AI. Falls back to local if remote fails."""
     try:
         result = call_remote_model(state["query"])
-        log_query(state["query"], state["complexity_score"], "remote", result)
+        log_query(state["user_id"], state["query"], state["complexity_score"], "remote", result)
         return {
             **state,
             "response": result["response"],
@@ -63,7 +64,7 @@ def remote_node(state: AgentState) -> AgentState:
     except Exception as e:
         print(f"[warning] Remote model failed, falling back to local: {e}")
         result = call_local_model(state["query"])
-        log_query(state["query"], state["complexity_score"], "local (fallback)", result)
+        log_query(state["user_id"], state["query"], state["complexity_score"], "local (fallback)", result)
         return {
             **state,
             "response": result["response"],
