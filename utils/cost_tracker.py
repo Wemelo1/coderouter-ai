@@ -167,6 +167,18 @@ def get_session_stats(user_id: int = None) -> dict:
     if user_id is None:
         return {"total_queries": 0, "local_queries": 0,
                 "remote_queries": 0, "total_saved": 0.0, "total_spent": 0.0}
+
+    # Count fallback as local since it ran on local model
+    local_count = sum(1 for l in session_log if "local" in l["routed_to"])
+    remote_count = sum(1 for l in session_log if l["routed_to"] == "remote")
+
+    return {
+        "total_queries": len(session_log),
+        "local_queries": local_count,
+        "remote_queries": remote_count,
+        "total_saved": round(sum(l["cost_saved"] for l in session_log), 6),
+        "total_spent": round(sum(l["cost_incurred"] for l in session_log), 6)
+    }
                 
     conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys = ON;")

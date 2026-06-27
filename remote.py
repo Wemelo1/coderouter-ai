@@ -13,7 +13,7 @@ def call_remote_model(query: str) -> dict:
         client = OpenAI(
             api_key=os.getenv("FIREWORKS_API_KEY"),
             base_url="https://api.fireworks.ai/inference/v1",
-            timeout=20.0  # Fail fast after 20s and fall back to local
+            timeout=20.0
         )
 
         response = client.chat.completions.create(
@@ -54,11 +54,16 @@ def call_remote_model(query: str) -> dict:
             ]
         )
         answer = fallback_response["message"]["content"]
+
+        # Calculate what we SAVED by not using remote
+        estimated_tokens = len(answer.split()) * 1.3
+        cost_saved = round((estimated_tokens / 1000) * COST_PER_1K_TOKENS, 6)
+
         note = "\n\n> ⚠️ *Remote model unavailable (network timeout). Answered locally as fallback.*"
         return {
             "response": answer + note,
             "model_used": "qwen2.5-coder:1.5b (fallback)",
-            "tokens": len(answer.split()),
-            "cost_saved": 0.0,
+            "tokens": int(estimated_tokens),
+            "cost_saved": cost_saved,
             "cost_incurred": 0.0
         }
