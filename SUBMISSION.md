@@ -51,7 +51,7 @@ Built on **LangGraph**, the workflow is a stateful multi-node graph where each s
 - **Real-time session stats** — live dashboard showing local vs remote usage and total savings
 - **Syntax highlighting** — code responses rendered with full highlighting
 
-----
+---
 
 ## 🛠️ Tech Stack
 
