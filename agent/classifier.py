@@ -15,8 +15,8 @@ def classify_complexity(query: str) -> int:
 
 SCORING RULES:
 1 = Trivial (what is a variable, rename this, fix typo)
-2 = Simple (write hello world, explain a loop, basic syntax fix)
-3 = Moderate (write a function with logic, debug a small snippet, explain an algorithm)
+2 = Simple (write hello world, explain a loop, basic syntax fix, simple algorithmic logic like checking primes/Armstrong numbers)
+3 = Moderate (write a function with custom business logic, debug a small snippet, explain an advanced algorithm)
 4 = Complex (build a REST API, implement a data structure, write a class with multiple methods)
 5 = Expert (system architecture, design patterns, performance optimization, security implementation)
 
@@ -25,6 +25,7 @@ EXAMPLES:
 "write a hello world program" → 1
 "explain what recursion is" → 2
 "write a function to reverse a string" → 2
+"check if a number is prime or Armstrong" → 2
 "debug why my loop runs infinitely" → 3
 "write a binary search algorithm" → 3
 "build a REST API with authentication" → 4

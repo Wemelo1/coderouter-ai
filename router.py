@@ -1,6 +1,6 @@
 import os
 
-COMPLEXITY_THRESHOLD = int(os.getenv("COMPLEXITY_THRESHOLD", 2))
+COMPLEXITY_THRESHOLD = int(os.getenv("COMPLEXITY_THRESHOLD", 3))
 
 def route_query(complexity_score: int) -> str:
     """
