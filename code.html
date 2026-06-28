@@ -1,561 +1,1555 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>CodeRouter AI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" id="prismTheme"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: "#c2652a",
+        "on-primary": "#ffffff",
+        "primary-container": "#fbe8d8",
+        "on-primary-container": "#401a08",
+        "primary-fixed": "#fbe8d8",
+        "primary-fixed-dim": "#f0a878",
+        "on-primary-fixed": "#401a08",
+        "on-primary-fixed-variant": "#8a4518",
+        "inverse-primary": "#f0a878",
+        "surface-tint": "#c2652a",
+        background: "var(--color-bg)",
+        "on-background": "var(--color-on-bg)",
+        surface: "var(--color-surface)",
+        "surface-dim": "var(--color-surface-dim)",
+        "surface-bright": "var(--color-surface-bright)",
+        "surface-container-lowest": "var(--color-surface-lowest)",
+        "surface-container-low": "var(--color-surface-low)",
+        "surface-container": "var(--color-surface-container)",
+        "surface-container-high": "var(--color-surface-high)",
+        "surface-container-highest": "var(--color-surface-highest)",
+        "on-surface": "var(--color-on-surface)",
+        "on-surface-variant": "var(--color-on-surface-variant)",
+        "surface-variant": "var(--color-surface-variant)",
+        outline: "var(--color-outline)",
+        "outline-variant": "var(--color-outline-variant)",
+        secondary: "var(--color-secondary)",
+        "on-secondary": "#ffffff",
+        "secondary-container": "var(--color-secondary-container)",
+        "on-secondary-container": "var(--color-on-secondary-container)",
+        "secondary-fixed": "var(--color-secondary-fixed)",
+        "secondary-fixed-dim": "var(--color-secondary-dim)",
+        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+        "on-secondary-fixed-variant": "var(--color-on-secondary-variant)",
+        error: "var(--color-error)",
+        "on-error": "#ffffff",
+        "error-container": "var(--color-error-container)",
+        "on-error-container": "var(--color-on-error-container)",
+        tertiary: "#8c3c3c",
+        "on-tertiary": "#ffffff",
+        "tertiary-container": "#d47070",
+        "on-tertiary-container": "#3a2020"
+      },
+      fontFamily: {
+        headline: ["EB Garamond", "serif"],
+        display: ["EB Garamond", "serif"],
+        body: ["Manrope", "sans-serif"],
+        label: ["Manrope", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"]
+      },
+      borderRadius: {
+        DEFAULT: "0.25rem",
+        lg: "0.5rem",
+        xl: "0.75rem",
+        "2xl": "1rem",
+        full: "9999px"
+      }
+    }
+  }
+}
+</script>
 <style>
   :root {
-    --primary: #7C3AED;
-    --primary-light: #A78BFA;
-    --primary-dark: #5B21B6;
-    --accent: #0891B2;
-    --accent-light: #22D3EE;
-    --bg: #0E0E1A;
-    --surface: #16162A;
-    --surface-2: #1E1E3A;
-    --surface-3: #2A2A4A;
-    --border: #2E2E50;
-    --text: #E6EDF3;
-    --text-dim: #8B949E;
-    --text-muted: #5A5A7A;
-    --green: #3FB950;
-    --red: #F85149;
-    --radius: 10px;
-    --font-heading: 'Space Grotesk', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
+    --color-bg: #faf5ee;
+    --color-on-bg: #3a302a;
+    --color-surface: #faf5ee;
+    --color-surface-dim: #dcd6cc;
+    --color-surface-bright: #faf5ee;
+    --color-surface-lowest: #ffffff;
+    --color-surface-low: #f6f0e8;
+    --color-surface-container: #f2ece4;
+    --color-surface-high: #ece6dc;
+    --color-surface-highest: #e6e0d6;
+    --color-on-surface: #3a302a;
+    --color-on-surface-variant: #605850;
+    --color-surface-variant: #ece6dc;
+    --color-outline: #9a9088;
+    --color-outline-variant: #d8d0c8;
+    --color-secondary: #78706a;
+    --color-secondary-container: #eae2da;
+    --color-on-secondary-container: #605850;
+    --color-secondary-fixed: #eae2da;
+    --color-secondary-dim: #cec6be;
+    --color-on-secondary-fixed: #2a2420;
+    --color-on-secondary-variant: #504840;
+    --color-error: #c0392b;
+    --color-error-container: #fce4e0;
+    --color-on-error-container: #7a1a10;
+    --color-scrollbar: #d8d0c8;
+    --color-scrollbar-hover: #9a9088;
+    --elevation-soft: 0 2px 16px rgba(58, 48, 42, 0.04);
+    --elevation-medium: 0 4px 24px rgba(58, 48, 42, 0.06);
+    --elevation-high: 0 8px 40px rgba(58, 48, 42, 0.1);
+    --overlay-bg: rgba(58, 48, 42, 0.2);
+    --code-bg: #f6f0e8;
+    --code-border: #d8d0c8;
+    --code-inline-bg: #ece6dc;
+    --bubble-assistant-bg: #ffffff;
+    --auth-glow-1: #fbe8d8;
+    --auth-glow-2: #eae2da;
+    --suggestion-bg: #ffffff;
+    --suggestion-hover: #f6f0e8;
+    --input-border: #d8d0c8;
+    --input-focus-ring: rgba(194, 101, 42, 0.1);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html.dark {
+    --color-bg: #171210;
+    --color-on-bg: #e8e0d8;
+    --color-surface: #1f1a17;
+    --color-surface-dim: #171210;
+    --color-surface-bright: #2d2723;
+    --color-surface-lowest: #14100e;
+    --color-surface-low: #1f1a17;
+    --color-surface-container: #25201d;
+    --color-surface-high: #2d2723;
+    --color-surface-highest: #38312d;
+    --color-on-surface: #e8e0d8;
+    --color-on-surface-variant: #b0a69c;
+    --color-surface-variant: #38312d;
+    --color-outline: #7a7268;
+    --color-outline-variant: #4a443e;
+    --color-secondary: #b0a69c;
+    --color-secondary-container: #38312d;
+    --color-on-secondary-container: #ccc2b8;
+    --color-secondary-fixed: #5a524a;
+    --color-secondary-dim: #4a443e;
+    --color-on-secondary-fixed: #e8e0d8;
+    --color-on-secondary-variant: #8a8278;
+    --color-error: #ff8a80;
+    --color-error-container: #5a1a10;
+    --color-on-error-container: #ffdad6;
+    --color-scrollbar: #4a443e;
+    --color-scrollbar-hover: #7a7268;
+    --elevation-soft: 0 2px 16px rgba(0, 0, 0, 0.2);
+    --elevation-medium: 0 4px 24px rgba(0, 0, 0, 0.3);
+    --elevation-high: 0 8px 40px rgba(0, 0, 0, 0.4);
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --code-bg: #1f1a17;
+    --code-border: #38312d;
+    --code-inline-bg: #38312d;
+    --bubble-assistant-bg: #25201d;
+    --auth-glow-1: rgba(194, 101, 42, 0.15);
+    --auth-glow-2: rgba(120, 112, 106, 0.15);
+    --suggestion-bg: #25201d;
+    --suggestion-hover: #2d2723;
+    --input-border: #4a443e;
+    --input-focus-ring: rgba(194, 101, 42, 0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 16px;
+    transition: background-color 0.5s ease;
+  }
+  html.dark { color-scheme: dark; }
+
   body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    font-family: 'Manrope', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-on-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  ::-webkit-scrollbar { width: 5px; }
+  *, *::before, *::after {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'EB Garamond', serif; }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  ::-webkit-scrollbar-thumb { background: var(--color-scrollbar); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-scrollbar-hover); }
 
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-  header .logo {
-    width: 28px; height: 28px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0;
-  }
-  header h1 {
-    font-family: var(--font-heading);
-    font-size: 16px; font-weight: 600;
-  }
-  header .badge {
-    font-size: 9px; font-weight: 500;
-    padding: 2px 8px; border-radius: 999px;
-    background: var(--surface-2); color: var(--text-dim);
-    border: 1px solid var(--border);
-    letter-spacing: .3px; text-transform: uppercase;
-  }
-  header .spacer { flex: 1; }
+  .elevation-soft { box-shadow: var(--elevation-soft); }
+  .elevation-medium { box-shadow: var(--elevation-medium); }
+  .elevation-high { box-shadow: var(--elevation-high); }
 
-  .layout {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+  .hairline { border: 1px solid var(--color-outline-variant); }
+  .hairline-b { border-bottom: 1px solid var(--color-outline-variant); }
+  .hairline-t { border-top: 1px solid var(--color-outline-variant); }
+  .hairline-r { border-right: 1px solid var(--color-outline-variant); }
 
-  .chat-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+  .slide-up { animation: slideUp 0.35s ease forwards; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-on-surface-variant); animation: pulse 1.4s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
+
+  .page { display: none; }
+  .page.active { display: flex; }
+
+  .auth-glow-1, .auth-glow-2 {
+    position: absolute; border-radius: 50%; filter: blur(120px);
+    pointer-events: none; opacity: 0.5;
+    transition: background-color 0.5s ease;
+  }
+  .auth-glow-1 {
+    top: 0; right: 0; width: 500px; height: 500px;
+    background: var(--auth-glow-1);
+    transform: translate(30%, -30%);
+  }
+  .auth-glow-2 {
+    bottom: 0; left: 0; width: 600px; height: 600px;
+    background: var(--auth-glow-2);
+    transform: translate(-30%, 30%);
+    filter: blur(150px);
   }
 
-  #chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    scroll-behavior: smooth;
+  .tab-active { color: #c2652a; }
+  .tab-active::after {
+    content: ''; position: absolute; bottom: -17px; left: 0; right: 0;
+    height: 2px; background: #c2652a; border-radius: 1px;
+  }
+  .tab-inactive { color: var(--color-on-surface-variant); cursor: pointer; transition: color 0.3s; }
+  .tab-inactive:hover { color: var(--color-on-surface); }
+
+  input.auth-input {
+    width: 100%; background: var(--color-surface-lowest); border: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface); font-size: 0.875rem; border-radius: 0.5rem;
+    padding: 0.75rem; transition: border-color 0.2s, box-shadow 0.2s, background-color 0.4s, color 0.4s;
+    outline: none; font-family: 'Manrope', sans-serif;
+  }
+  input.auth-input:focus {
+    border-color: #c2652a; box-shadow: 0 0 0 3px var(--input-focus-ring);
   }
 
-  .welcome {
-    text-align: center;
-    padding: 32px 24px 16px;
-    color: var(--text-dim);
-    max-width: 480px;
-    margin: auto;
-  }
-  .welcome .icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; margin: 0 auto 12px;
-  }
-  .welcome h2 {
-    font-family: var(--font-heading);
-    font-size: 20px; color: var(--text);
-    margin-bottom: 5px; font-weight: 600;
-  }
-  .welcome p { font-size: 13px; line-height: 1.5; margin-bottom: 18px; }
-  .welcome .suggestions {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 7px;
-  }
-  .welcome .suggestions button {
-    padding: 6px 13px; border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface); color: var(--text-dim);
-    font-family: var(--font-body); font-size: 12px;
-    cursor: pointer; transition: all .2s;
-  }
-  .welcome .suggestions button:hover {
-    border-color: var(--primary); color: var(--text); background: var(--surface-2);
-  }
+  .msg-bubble { animation: msgIn 0.3s ease; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .msg {
-    max-width: 720px;
-    animation: msgIn .3s ease;
-    display: flex; flex-direction: column;
-  }
-  .msg.user { align-self: flex-end; }
-  .msg.assistant { align-self: flex-start; }
+  .msg-user .bubble { background: #c2652a; color: #fff; border-bottom-right-radius: 3px; }
+  .msg-assistant .bubble { background: var(--bubble-assistant-bg); border: 1px solid var(--color-outline-variant); border-bottom-left-radius: 3px; }
 
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg .bubble {
-    padding: 11px 15px;
-    border-radius: var(--radius);
-    line-height: 1.65;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .msg.user .bubble {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff;
-    border-bottom-right-radius: 3px;
-  }
-  .msg.assistant .bubble {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 3px;
-  }
   .msg .bubble pre {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px; margin: 6px 0; overflow-x: auto;
+    background: var(--code-bg); border: 1px solid var(--code-border);
+    border-radius: 6px; padding: 0; margin: 8px 0; overflow-x: auto;
   }
-  .msg .bubble code {
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 12.5px;
+  .msg .bubble pre code {
+    background: none; padding: 12px; border: none; display: block;
+    font-family: 'ui-monospace', 'SFMono-Regular', monospace;
+    font-size: 0.8125rem; line-height: 1.6;
   }
-  .msg .bubble pre code { background: none; padding: 0; border: none; }
   .msg .bubble :not(pre) > code {
-    background: var(--surface-3);
-    padding: 1px 5px; border-radius: 4px;
-  }
-  .msg .bubble strong { font-weight: 600; }
-
-  .msg .meta {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 4px; padding: 0 4px;
-    font-size: 10.5px; color: var(--text-dim);
-  }
-  .meta .route-local { color: var(--green); }
-  .meta .route-remote { color: var(--red); }
-
-  .typing-indicator { align-self: flex-start; }
-  .typing-indicator .bubble {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 3px;
-    display: flex; gap: 5px;
-    padding: 13px 17px;
-  }
-  .typing-indicator .bubble span {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    animation: pulse 1.3s infinite;
-  }
-  .typing-indicator .bubble span:nth-child(2) { animation-delay: .2s; }
-  .typing-indicator .bubble span:nth-child(3) { animation-delay: .4s; }
-  @keyframes pulse {
-    0%, 60%, 100% { opacity: .25; transform: scale(.8); }
-    30% { opacity: 1; transform: scale(1); }
-  }
-
-  .input-area {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 12px 24px 14px;
-    flex-shrink: 0;
-  }
-  .input-row {
-    display: flex; gap: 8px;
-    max-width: 760px;
-    align-items: flex-end;
-  }
-  .input-row .input-wrap { flex: 1; position: relative; }
-  .input-row input {
-    width: 100%;
-    padding: 10px 15px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px; outline: none;
-    transition: border .2s;
-  }
-  .input-row input:focus { border-color: var(--primary); }
-  .input-row input::placeholder { color: var(--text-muted); }
-  .input-row button {
-    padding: 10px 18px;
-    border-radius: var(--radius);
-    border: none;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff;
-    font-family: var(--font-heading);
-    font-weight: 600; font-size: 13px;
-    cursor: pointer; white-space: nowrap;
-    transition: opacity .2s, transform .15s;
-  }
-  .input-row button:hover { opacity: .9; }
-  .input-row button:active { transform: scale(.97); }
-  .input-row button:disabled { opacity: .35; cursor: not-allowed; transform: none; }
-
-  .stats-col {
-    width: 260px;
-    flex-shrink: 0;
-    background: var(--surface);
-    border-left: 1px solid var(--border);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow-y: auto;
-  }
-  .stats-col h3 {
-    font-family: var(--font-heading);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: .8px;
-  }
-  .stat-card {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px;
-  }
-  .stat-card .label {
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-bottom: 4px;
-  }
-  .stat-card .value {
-    font-family: var(--font-heading);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .stat-card .sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 13px;
-  }
-  .stat-row .stat-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .stat-row .stat-val {
-    font-family: var(--font-heading);
-    font-weight: 600;
-  }
-
-  .stat-row + .stat-row {
-    border-top: 1px solid var(--border);
-  }
-
-  .progress-bar {
-    height: 6px;
-    border-radius: 3px;
-    background: var(--surface-3);
-    overflow: hidden;
-    margin-top: 8px;
-  }
-  .progress-bar .fill {
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    transition: width .4s ease;
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 4px 0;
+    background: var(--code-inline-bg); padding: 1px 6px; border-radius: 4px;
+    font-size: 0.8125rem; color: var(--color-on-surface);
   }
 
   @media (max-width: 768px) {
-    .stats-col { display: none; }
-    #chat { padding: 16px; }
-    .input-area { padding: 10px 16px 12px; }
-    .msg { max-width: 100%; }
+    .sidebar { display: none; }
+    .chat-feed { padding: 16px !important; }
   }
+
+  .btn-primary {
+    background: #c2652a; color: #fff; font-family: 'Manrope', sans-serif;
+    font-weight: 500; border-radius: 0.5rem; padding: 0.75rem 1.5rem;
+    border: none; cursor: pointer; transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { background: #a85522; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-outline {
+    background: transparent; color: var(--color-on-surface); font-family: 'Manrope', sans-serif;
+    font-weight: 500; border-radius: 0.5rem; padding: 0.625rem 1.25rem;
+    border: 1px solid var(--color-outline-variant); cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { background: var(--color-surface-low); border-color: var(--color-outline); }
+
+  .suggestion-btn {
+    text-align: left; padding: 1rem 1.25rem; border: 1px solid var(--color-outline-variant);
+    background: var(--suggestion-bg); border-radius: 0.5rem; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    font-family: 'Manrope', sans-serif;
+  }
+  .suggestion-btn:hover { background: var(--suggestion-hover); border-color: #c2652a; }
+
+  .input-area textarea {
+    width: 100%; background: transparent; border: none; resize: none;
+    color: var(--color-on-surface); font-family: 'Manrope', sans-serif;
+    font-size: 0.875rem; line-height: 1.5; padding: 12px 4px;
+    min-height: 48px; max-height: 160px; outline: none;
+  }
+
+  .panel-overlay {
+    position: fixed; inset: 0; z-index: 60;
+    background: var(--overlay-bg); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .panel-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .panel-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 460px; max-width: 100vw;
+    z-index: 70; background: var(--color-surface);
+    border-left: 1px solid var(--color-outline-variant);
+    transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.4s ease;
+    box-shadow: var(--elevation-high);
+    display: flex; flex-direction: column;
+  }
+  .panel-drawer.open { transform: translateX(0); }
+
+  .panel-header {
+    padding: 1.5rem 1.75rem; border-bottom: 1px solid var(--color-outline-variant);
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .panel-header h2 {
+    font-family: 'EB Garamond', serif; font-size: 1.5rem; font-weight: 700;
+    color: var(--color-on-surface);
+  }
+  .panel-close {
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    border-radius: 0.5rem; border: none; background: transparent;
+    color: var(--color-on-surface-variant); cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .panel-close:hover { background: var(--color-surface-variant); color: var(--color-on-surface); }
+
+  .panel-body { flex: 1; overflow-y: auto; padding: 1.5rem 1.75rem; }
+
+  .session-item, .prompt-item {
+    padding: 1rem 1.25rem; border-radius: 0.5rem;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface-low);
+    cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    margin-bottom: 0.75rem;
+  }
+  .session-item:hover, .prompt-item:hover {
+    background: var(--color-surface-variant); border-color: var(--color-outline);
+  }
+  .session-item .title, .prompt-item .title {
+    font-weight: 600; color: var(--color-on-surface); font-size: 0.9rem; margin-bottom: 0.25rem;
+  }
+  .session-item .preview, .prompt-item .preview {
+    font-size: 0.8rem; color: var(--color-on-surface-variant);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .session-item .meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 0.5rem; font-size: 0.75rem; color: var(--color-on-surface-variant);
+  }
+  .delete-btn {
+    background: none; border: none; color: var(--color-error);
+    cursor: pointer; font-size: 0.75rem; padding: 2px 8px;
+    border-radius: 4px; transition: background 0.2s;
+  }
+  .delete-btn:hover { background: var(--color-error-container); }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .stat-card {
+    padding: 1rem; border-radius: 0.5rem;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface-low);
+  }
+  .stat-card .label { font-size: 0.75rem; color: var(--color-on-surface-variant); margin-bottom: 0.25rem; }
+  .stat-card .value { font-family: 'EB Garamond', serif; font-size: 1.5rem; font-weight: 700; color: var(--color-on-surface); }
+  .stat-card.full { grid-column: 1 / -1; }
+
+  .bar-chart { display: flex; gap: 0.5rem; align-items: flex-end; height: 120px; padding-top: 0.5rem; }
+  .bar-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+  .bar-item .bar {
+    width: 100%; border-radius: 3px 3px 0 0;
+    background: #c2652a; min-height: 4px;
+    transition: height 0.6s ease;
+  }
+  .bar-item .bar.secondary { background: var(--color-secondary); }
+  .bar-item .label { font-size: 0.65rem; color: var(--color-on-surface-variant); }
+
+  .help-section { margin-bottom: 1.5rem; }
+  .help-section h3 {
+    font-family: 'EB Garamond', serif; font-size: 1.2rem; font-weight: 600;
+    color: var(--color-on-surface); margin-bottom: 0.75rem;
+  }
+  .help-section p, .help-section li {
+    font-size: 0.85rem; color: var(--color-on-surface-variant); line-height: 1.6;
+  }
+  .help-section ul { padding-left: 1.25rem; }
+  .help-section kbd {
+    background: var(--color-surface-variant); padding: 2px 8px;
+    border-radius: 4px; font-size: 0.75rem; font-family: 'Manrope', sans-serif;
+    border: 1px solid var(--color-outline-variant); color: var(--color-on-surface);
+  }
+
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 0; border-bottom: 1px solid var(--color-outline-variant);
+  }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-row .info { flex: 1; }
+  .setting-row .info .name { font-weight: 500; color: var(--color-on-surface); font-size: 0.9rem; }
+  .setting-row .info .desc { font-size: 0.8rem; color: var(--color-on-surface-variant); margin-top: 0.15rem; }
+
+  .toggle-switch {
+    width: 44px; height: 24px; border-radius: 12px; background: var(--color-outline);
+    cursor: pointer; position: relative; transition: background 0.3s; flex-shrink: 0;
+  }
+  .toggle-switch.active { background: #c2652a; }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: #fff;
+    transition: transform 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.active::after { transform: translateX(20px); }
+
+  .theme-toggle-btn {
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+    border-radius: 0.5rem; border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface); color: var(--color-on-surface-variant);
+    cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .theme-toggle-btn:hover { background: var(--color-surface-low); color: var(--color-on-surface); }
+
+  .empty-state {
+    text-align: center; padding: 3rem 1rem; color: var(--color-on-surface-variant);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; color: var(--color-outline); }
+  .empty-state p { font-size: 0.9rem; }
 </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col antialiased bg-background selection:bg-primary-container selection:text-on-primary-container">
 
-<header>
-  <div class="logo">⚡</div>
-  <h1>CodeRouter AI</h1>
-  <span class="badge">v2.0</span>
-  <span class="spacer"></span>
-  <span style="font-size:11px;color:var(--text-dim);display:flex;gap:10px">
-    <span>🟢 Free</span>
-    <span>🔴 Credits</span>
-  </span>
-</header>
+<!-- ============================== -->
+<!-- AUTH PAGE -->
+<!-- ============================== -->
+<div class="page active flex-col min-h-screen" id="authPage">
+  <header class="w-full bg-background">
+    <div class="flex justify-between items-center px-8 py-6 max-w-7xl mx-auto w-full">
+      <a class="text-2xl font-headline font-bold text-on-surface hover:text-primary transition-colors duration-300" href="#">CodeRouterAI</a>
+      <nav class="flex items-center gap-4">
+        <button class="theme-toggle-btn" id="authThemeToggle" title="Toggle theme">
+          <span class="material-symbols-outlined text-[20px]">light_mode</span>
+        </button>
+        <a class="text-primary border-b-2 border-primary pb-1 font-body font-medium hover:text-primary transition-colors duration-300 cursor-pointer hidden md:inline" id="navSignIn">Sign In</a>
+      </nav>
+    </div>
+  </header>
 
-<div class="layout">
-  <div class="chat-col">
-    <div id="chat">
-      <div class="welcome" id="welcome">
-        <div class="icon">⚡</div>
-        <h2>CodeRouter AI</h2>
-        <p>Cost-aware coding assistant — routes tasks between local (free) and remote (credits) models based on complexity</p>
-        <div class="suggestions">
-          <button onclick="sendSuggestion(this)">Write a Fibonacci function in Python</button>
-          <button onclick="sendSuggestion(this)">Explain the SOLID principles</button>
-          <button onclick="sendSuggestion(this)">Debug: index out of range in Go</button>
-          <button onclick="sendSuggestion(this)">Design a REST API structure</button>
+  <main class="flex-grow flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div class="auth-glow-1"></div>
+    <div class="auth-glow-2"></div>
+
+    <div class="relative z-10 w-full max-w-md">
+      <div class="bg-surface-container-low elevation-soft rounded-xl p-8 sm:p-10 border border-outline-variant/60">
+        <div class="flex justify-center gap-8 mb-10 border-b border-outline-variant/40 pb-4 relative">
+          <button class="font-headline text-2xl font-medium focus:outline-none transition-colors duration-300 relative tab-active" id="tabSignUp">Create Account</button>
+          <button class="font-headline text-2xl focus:outline-none transition-colors duration-300 relative tab-inactive" id="tabSignIn">Sign In</button>
+        </div>
+
+        <div class="text-center mb-8">
+          <h1 class="font-headline text-4xl mb-2 text-on-surface" id="authTitle">Welcome.</h1>
+          <p class="font-body text-secondary text-sm" id="authSubtitle">Join the curated simplicity of CodeRouterAI.</p>
+        </div>
+
+        <form class="space-y-5" id="authForm">
+          <div id="nameField">
+            <label class="block text-sm font-medium text-on-surface-variant font-body mb-1.5" for="name">Full Name</label>
+            <input class="auth-input" id="name" name="name" placeholder="Jane Doe" type="text"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-on-surface-variant font-body mb-1.5" for="email">Email Address</label>
+            <input class="auth-input" id="email" name="email" placeholder="jane@example.com" type="email"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-on-surface-variant font-body mb-1.5" for="password">Password</label>
+            <div class="relative">
+              <input class="auth-input pr-10" id="password" name="password" placeholder="••••••••" type="password"/>
+              <button class="absolute inset-y-0 right-0 flex items-center pr-3 text-secondary hover:text-primary transition-colors" type="button" id="togglePass">
+                <span class="material-symbols-outlined text-[20px]">visibility_off</span>
+              </button>
+            </div>
+          </div>
+          <button class="btn-primary w-full text-base py-3.5 mt-4" type="submit" id="authSubmit">Get Started</button>
+          <p class="text-xs text-center text-secondary font-body mt-4">
+            By continuing, you agree to our <a class="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all duration-200" href="#">Terms</a> and <a class="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all duration-200" href="#">Privacy</a>.
+          </p>
+        </form>
+
+        <div class="mt-8">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-outline-variant/60"></div></div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-surface-container-low text-secondary font-body italic">Or continue with</span>
+            </div>
+          </div>
+          <div class="mt-5 grid grid-cols-2 gap-4">
+            <button class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container transition-colors duration-200" type="button">
+              <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg> Google
+            </button>
+            <button class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container transition-colors duration-200" type="button">
+              <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"/>
+              </svg> GitHub
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="input-area">
-      <form class="input-row" id="form" onsubmit="return sendMessage(event)">
-        <div class="input-wrap">
-          <input type="text" id="input" placeholder="Ask a coding question..." autofocus>
+  </main>
+
+  <footer class="w-full bg-background border-t border-outline-variant/60 mt-auto relative z-20">
+    <div class="flex flex-col md:flex-row justify-between items-center px-8 py-10 max-w-7xl mx-auto w-full">
+      <div class="mb-4 md:mb-0">
+        <span class="font-headline text-on-surface text-xl">CodeRouterAI</span>
+        <span class="font-body text-sm text-secondary ml-2">© 2024 CodeRouterAI. Curated simplicity.</span>
+      </div>
+      <nav class="flex gap-6 text-sm">
+        <a class="font-body text-on-secondary-container hover:underline decoration-primary/50 underline-offset-4 transition-all duration-200" href="#">Privacy</a>
+        <a class="font-body text-on-secondary-container hover:underline decoration-primary/50 underline-offset-4 transition-all duration-200" href="#">Terms</a>
+        <a class="font-body text-on-secondary-container hover:underline decoration-primary/50 underline-offset-4 transition-all duration-200" href="#">Support</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================== -->
+<!-- CHAT PAGE -->
+<!-- ============================== -->
+<div class="page flex-col h-screen" id="chatPage">
+  <!-- Mobile Header -->
+  <header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-surface hairline-b">
+    <div class="text-lg font-headline font-bold tracking-tight text-on-surface">CodeRouterAI</div>
+    <div class="flex items-center gap-2">
+      <button class="theme-toggle-btn" id="mobileThemeToggle" title="Toggle theme">
+        <span class="material-symbols-outlined text-[20px]">light_mode</span>
+      </button>
+      <button id="mobileMenuBtn" class="p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex w-full h-full pt-16 md:pt-0">
+    <!-- Sidebar -->
+    <aside class="sidebar flex-col w-[280px] h-full hairline-r bg-surface z-40 relative flex-shrink-0 hidden md:flex" id="sidebar">
+      <div class="p-8 pb-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-headline font-bold tracking-tight text-on-surface">CodeRouterAI</h1>
+          <p class="text-sm text-on-surface-variant mt-0.5">Cost-aware coding assistant</p>
         </div>
-        <button type="submit" id="sendBtn">Send</button>
-      </form>
-    </div>
-  </div>
-
-  <div class="stats-col" id="statsCol">
-    <h3>Session Stats</h3>
-
-    <div class="stat-card">
-      <div class="label">Total Queries</div>
-      <div class="value" id="statTotal">0</div>
-    </div>
-
-    <div style="display:flex;gap:10px">
-      <div class="stat-card" style="flex:1">
-        <div class="label">🟢 Local</div>
-        <div class="value" id="statLocal" style="font-size:20px">0</div>
+        <button class="theme-toggle-btn" id="sidebarThemeToggle" title="Toggle theme">
+          <span class="material-symbols-outlined text-[20px]">light_mode</span>
+        </button>
       </div>
-      <div class="stat-card" style="flex:1">
-        <div class="label">🔴 Remote</div>
-        <div class="value" id="statRemote" style="font-size:20px">0</div>
-      </div>
-    </div>
 
-    <div class="stat-card">
-      <div class="label">💰 Total Saved</div>
-      <div class="value" id="statSaved" style="font-size:20px">$0.00</div>
-      <div class="sub" id="statSpent">Spent: $0.00</div>
-    </div>
+      <nav class="px-6 flex-1 overflow-y-auto space-y-8">
+        <div>
+          <button class="flex items-center gap-3 w-full px-4 py-3 bg-on-surface text-surface rounded-md hover:bg-on-surface/90 transition-colors font-body font-medium" id="newChatBtn">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            <span>New Chat</span>
+          </button>
+        </div>
+        <div>
+          <div class="px-4 mb-3"><span class="text-xs font-semibold text-on-surface-variant uppercase tracking-widest">History</span></div>
+          <div class="space-y-1">
+            <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="recentSessionsBtn">
+              <span class="material-symbols-outlined text-[18px]">history</span>
+              <span>Recent Sessions</span>
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="savedPromptsBtn">
+              <span class="material-symbols-outlined text-[18px]">bookmark</span>
+              <span>Saved Prompts</span>
+            </button>
+            <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="analyticsBtn">
+              <span class="material-symbols-outlined text-[18px]">query_stats</span>
+              <span>Analytics</span>
+            </button>
+          </div>
+        </div>
 
-    <div class="stat-card">
-      <div class="label">Handled Locally</div>
-      <div class="progress-bar">
-        <div class="fill" id="statBar" style="width:0%"></div>
+        <div class="pt-4 hairline-t">
+          <div class="px-4 mb-4"><span class="text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Session Stats</span></div>
+          <div class="px-4 space-y-5">
+            <div class="p-4 bg-surface-container-low rounded-lg hairline">
+              <div class="text-xs text-on-surface-variant mb-1">Total Queries</div>
+              <div class="font-headline text-3xl font-bold text-on-surface" id="statTotal">0</div>
+            </div>
+            <div class="flex gap-3">
+              <div class="flex-1 p-3 bg-surface-container-low rounded-lg hairline">
+                <div class="text-xs text-on-surface-variant mb-1">Local</div>
+                <div class="font-headline text-xl font-bold text-on-surface" id="statLocal">0</div>
+              </div>
+              <div class="flex-1 p-3 bg-surface-container-low rounded-lg hairline">
+                <div class="text-xs text-on-surface-variant mb-1">Remote</div>
+                <div class="font-headline text-xl font-bold text-on-surface" id="statRemote">0</div>
+              </div>
+            </div>
+            <div class="p-4 bg-surface-container-low rounded-lg hairline">
+              <div class="text-xs text-on-surface-variant mb-1">Total Saved</div>
+              <div class="font-headline text-xl font-bold text-on-surface" id="statSaved">$0.00</div>
+              <div class="text-xs text-on-surface-variant mt-1" id="statSpent">Spent: $0.00</div>
+            </div>
+            <div class="p-4 bg-surface-container-low rounded-lg hairline">
+              <div class="text-xs text-on-surface-variant mb-1">Handled Locally</div>
+              <div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mt-2">
+                <div class="h-full bg-primary rounded-full transition-all duration-500" id="statBar" style="width:0%"></div>
+              </div>
+              <div class="flex justify-between text-xs text-on-surface-variant mt-1.5">
+                <span id="statPct">0%</span>
+                <span id="statCount">0 / 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="p-6 hairline-t space-y-3 bg-surface">
+        <button class="btn-outline w-full text-sm" id="settingsBtn">
+          <span class="material-symbols-outlined text-[18px] align-middle mr-1.5">settings</span>
+          Settings
+        </button>
+        <button class="btn-outline w-full text-sm" id="helpBtn">
+          <span class="material-symbols-outlined text-[18px] align-middle mr-1.5">help</span>
+          Help
+        </button>
+        <button class="btn-outline w-full text-sm" id="logoutBtn">
+          <span class="material-symbols-outlined text-[18px] align-middle mr-1.5">logout</span>
+          Sign Out
+        </button>
       </div>
-      <div class="progress-label">
-        <span id="statPct">0%</span>
-        <span id="statCount">0 / 0</span>
+    </aside>
+
+    <!-- Chat Main -->
+    <main class="flex-1 flex flex-col h-full bg-background relative min-w-0" id="chatMain">
+      <div class="flex-1 overflow-y-auto px-6 md:px-12 py-8 flex flex-col items-center" id="chatFeed">
+        <div class="w-full max-w-3xl flex flex-col gap-6 pb-32" id="chatMessages">
+          <div id="welcomeSection" class="flex flex-col items-center justify-center text-center mt-16 mb-8 slide-up">
+            <div class="w-12 h-12 flex items-center justify-center mb-5 bg-primary-container rounded-full">
+              <span class="material-symbols-outlined text-[28px] text-primary">auto_awesome</span>
+            </div>
+            <h2 class="font-headline text-4xl font-bold text-on-surface mb-3 tracking-tight">How can I assist you today?</h2>
+            <p class="text-base text-on-surface-variant max-w-lg font-body">Cost-aware routing between local (free) and remote (credits) models based on complexity.</p>
+          </div>
+
+          <div id="suggestions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">
+              <div class="flex items-center gap-2 text-on-surface mb-1">
+                <span class="material-symbols-outlined text-[18px] text-primary">code_blocks</span>
+                <span class="font-semibold text-sm">Fibonacci in Python</span>
+              </div>
+              <span class="text-xs text-on-surface-variant">Write a Fibonacci function</span>
+            </button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">
+              <div class="flex items-center gap-2 text-on-surface mb-1">
+                <span class="material-symbols-outlined text-[18px] text-primary">architecture</span>
+                <span class="font-semibold text-sm">SOLID Principles</span>
+              </div>
+              <span class="text-xs text-on-surface-variant">Explain SOLID design principles</span>
+            </button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">
+              <div class="flex items-center gap-2 text-on-surface mb-1">
+                <span class="material-symbols-outlined text-[18px] text-primary">bug_report</span>
+                <span class="font-semibold text-sm">Debug Go Code</span>
+              </div>
+              <span class="text-xs text-on-surface-variant">Index out of range error</span>
+            </button>
+            <button class="suggestion-btn" onclick="sendSuggestion(this)">
+              <div class="flex items-center gap-2 text-on-surface mb-1">
+                <span class="material-symbols-outlined text-[18px] text-primary">api</span>
+                <span class="font-semibold text-sm">REST API Design</span>
+              </div>
+              <span class="text-xs text-on-surface-variant">Design a REST API structure</span>
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="w-full px-6 md:px-12 py-6 bg-background hairline-t flex justify-center">
+        <div class="w-full max-w-3xl">
+          <div class="bg-surface border border-outline-variant rounded-xl flex items-end relative focus-within:border-primary focus-within:shadow-[0_0_0_3px_rgba(194,101,42,0.08)] transition-all duration-200" id="inputContainer">
+            <button class="p-3 m-1 text-on-surface-variant hover:text-on-surface transition-colors rounded-lg shrink-0 flex items-center justify-center" id="attachBtn">
+              <span class="material-symbols-outlined text-[20px]">attach_file</span>
+            </button>
+            <div class="flex-1 input-area">
+              <textarea id="chatInput" rows="1" placeholder="Ask a coding question..." oninput="autoResize(this)"></textarea>
+            </div>
+            <button class="p-2.5 m-1.5 bg-primary text-white rounded-lg shrink-0 flex items-center justify-center hover:bg-[#a85522] transition-colors disabled:opacity-40 disabled:cursor-not-allowed" id="sendBtn">
+              <span class="material-symbols-outlined text-[20px]">arrow_upward</span>
+            </button>
+          </div>
+          <div class="text-center mt-3">
+            <p class="text-xs text-on-surface-variant">CodeRouterAI may produce inaccurate information.</p>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 </div>
 
+<!-- ============================== -->
+<!-- MOBILE SIDEBAR -->
+<!-- ============================== -->
+<div class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm hidden" id="mobileOverlay"></div>
+<aside class="fixed top-0 left-0 h-full w-[280px] bg-surface z-50 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-xl md:hidden" id="mobileSidebar">
+  <div class="p-6 hairline-b flex justify-between items-center">
+    <span class="font-headline text-xl font-bold text-on-surface">CodeRouterAI</span>
+    <button id="closeMobileMenu" class="p-1 text-on-surface-variant hover:text-on-surface">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="p-6 overflow-y-auto h-[calc(100%-65px)]">
+    <button class="flex items-center gap-3 w-full px-4 py-3 bg-on-surface text-surface rounded-md hover:bg-on-surface/90 transition-colors font-body font-medium mb-6" id="mobileNewChatBtn">
+      <span class="material-symbols-outlined text-[20px]">add</span>
+      <span>New Chat</span>
+    </button>
+    <div class="mb-6 space-y-1">
+      <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="mobileRecentSessionsBtn">
+        <span class="material-symbols-outlined text-[18px]">history</span><span>Recent Sessions</span>
+      </button>
+      <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="mobileSavedPromptsBtn">
+        <span class="material-symbols-outlined text-[18px]">bookmark</span><span>Saved Prompts</span>
+      </button>
+      <button class="flex items-center gap-3 w-full px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant transition-colors rounded-md" id="mobileAnalyticsBtn">
+        <span class="material-symbols-outlined text-[18px]">query_stats</span><span>Analytics</span>
+      </button>
+    </div>
+    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2 mb-2" id="mobileSettingsBtn">
+      <span class="material-symbols-outlined text-[18px]">settings</span> Settings
+    </button>
+    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2 mb-2" id="mobileHelpBtn">
+      <span class="material-symbols-outlined text-[18px]">help</span> Help
+    </button>
+    <button class="btn-outline w-full text-sm flex items-center justify-center gap-2" id="mobileLogoutBtn">
+      <span class="material-symbols-outlined text-[18px]">logout</span> Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- ============================== -->
+<!-- PANEL OVERLAY & DRAWER -->
+<!-- ============================== -->
+<div class="panel-overlay" id="panelOverlay"></div>
+<div class="panel-drawer" id="panelDrawer">
+  <div class="panel-header">
+    <h2 id="panelTitle">Panel</h2>
+    <button class="panel-close" id="panelClose"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
 <script>
-  const chat = document.getElementById('chat');
-  const form = document.getElementById('form');
-  const input = document.getElementById('input');
-  const sendBtn = document.getElementById('sendBtn');
-  const welcome = document.getElementById('welcome');
+// ================================
+// THEME TOGGLE
+// ================================
+function getTheme() { return localStorage.getItem('coderouter-theme') || 'light'; }
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  if (theme === 'dark') { document.documentElement.classList.add('dark'); } else { document.documentElement.classList.remove('dark'); }
+  localStorage.setItem('coderouter-theme', theme);
+  const icons = document.querySelectorAll('.theme-toggle-btn .material-symbols-outlined');
+  icons.forEach(icon => { icon.textContent = theme === 'dark' ? 'dark_mode' : 'light_mode'; });
+}
+function toggleTheme() { setTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
 
-  const elTotal = document.getElementById('statTotal');
-  const elLocal = document.getElementById('statLocal');
-  const elRemote = document.getElementById('statRemote');
-  const elSaved = document.getElementById('statSaved');
-  const elSpent = document.getElementById('statSpent');
-  const elBar = document.getElementById('statBar');
-  const elPct = document.getElementById('statPct');
-  const elCount = document.getElementById('statCount');
+setTheme(getTheme());
 
-  async function fetchStats() {
-    try {
-      const res = await fetch('/api/stats');
-      if (!res.ok) return;
-      const s = await res.json();
-      elTotal.textContent = s.total_queries;
-      elLocal.textContent = s.local_queries;
-      elRemote.textContent = s.remote_queries;
-      elSaved.textContent = '$' + s.total_saved.toFixed(6);
-      elSpent.textContent = 'Spent: $' + s.total_spent.toFixed(6);
-      const pct = s.total_queries > 0 ? Math.round((s.local_queries / s.total_queries) * 100) : 0;
-      elBar.style.width = pct + '%';
-      elPct.textContent = pct + '%';
-      elCount.textContent = s.local_queries + ' / ' + s.total_queries;
-    } catch (_) {}
+document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+  btn.addEventListener('click', toggleTheme);
+});
+
+// ================================
+// AUTH STATE
+// ================================
+let isSignUp = true;
+let currentSessionId = null;
+let messages = [];
+
+const authPage = document.getElementById('authPage');
+const chatPage = document.getElementById('chatPage');
+const tabSignUp = document.getElementById('tabSignUp');
+const tabSignIn = document.getElementById('tabSignIn');
+const nameField = document.getElementById('nameField');
+const authTitle = document.getElementById('authTitle');
+const authSubtitle = document.getElementById('authSubtitle');
+const authSubmit = document.getElementById('authSubmit');
+const togglePass = document.getElementById('togglePass');
+const passInput = document.getElementById('password');
+
+tabSignUp.addEventListener('click', () => {
+  isSignUp = true;
+  tabSignUp.className = 'font-headline text-2xl font-medium focus:outline-none transition-colors duration-300 relative tab-active';
+  tabSignIn.className = 'font-headline text-2xl focus:outline-none transition-colors duration-300 relative tab-inactive';
+  nameField.style.display = 'block';
+  authTitle.textContent = 'Welcome.';
+  authSubtitle.textContent = 'Join the curated simplicity of CodeRouterAI.';
+  authSubmit.textContent = 'Get Started';
+});
+
+tabSignIn.addEventListener('click', () => {
+  isSignUp = false;
+  tabSignIn.className = 'font-headline text-2xl font-medium focus:outline-none transition-colors duration-300 relative tab-active';
+  tabSignUp.className = 'font-headline text-2xl focus:outline-none transition-colors duration-300 relative tab-inactive';
+  nameField.style.display = 'none';
+  authTitle.textContent = 'Welcome back.';
+  authSubtitle.textContent = 'Continue your curated AI coding experience.';
+  authSubmit.textContent = 'Sign In';
+});
+
+document.getElementById('navSignIn').addEventListener('click', () => {
+  if (isSignUp) tabSignIn.click();
+});
+
+togglePass.addEventListener('click', () => {
+  const type = passInput.type === 'password' ? 'text' : 'password';
+  passInput.type = type;
+  togglePass.querySelector('span').textContent = type === 'password' ? 'visibility_off' : 'visibility';
+});
+
+document.getElementById('authForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  transitionToChat();
+});
+
+function transitionToChat() {
+  authPage.classList.remove('active');
+  authPage.style.display = 'none';
+  chatPage.style.display = 'flex';
+  chatPage.classList.add('active');
+  chatPage.style.opacity = '0';
+  requestAnimationFrame(() => {
+    chatPage.style.transition = 'opacity 0.4s ease';
+    chatPage.style.opacity = '1';
+  });
+  fetchStats();
+  currentSessionId = Date.now().toString();
+  messages = [];
+  document.getElementById('chatInput').focus();
+}
+
+// ================================
+// MOBILE SIDEBAR
+// ================================
+const mobileSidebar = document.getElementById('mobileSidebar');
+const mobileOverlay = document.getElementById('mobileOverlay');
+
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  mobileSidebar.classList.remove('-translate-x-full');
+  mobileOverlay.classList.remove('hidden');
+});
+
+document.getElementById('closeMobileMenu').addEventListener('click', closeMobileMenu);
+mobileOverlay.addEventListener('click', closeMobileMenu);
+
+function closeMobileMenu() {
+  mobileSidebar.classList.add('-translate-x-full');
+  mobileOverlay.classList.add('hidden');
+}
+
+// ================================
+// PANEL SYSTEM
+// ================================
+const panelOverlay = document.getElementById('panelOverlay');
+const panelDrawer = document.getElementById('panelDrawer');
+const panelTitle = document.getElementById('panelTitle');
+const panelBody = document.getElementById('panelBody');
+const panelClose = document.getElementById('panelClose');
+
+function openPanel(title, content) {
+  panelTitle.textContent = title;
+  panelBody.innerHTML = content;
+  panelOverlay.classList.add('open');
+  panelDrawer.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel() {
+  panelOverlay.classList.remove('open');
+  panelDrawer.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+panelClose.addEventListener('click', closePanel);
+panelOverlay.addEventListener('click', closePanel);
+
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closePanel();
+});
+
+// ================================
+// RECENT SESSIONS
+// ================================
+function getSessions() {
+  try { return JSON.parse(localStorage.getItem('coderouter-sessions') || '[]'); } catch { return []; }
+}
+function saveSession(sessions) {
+  localStorage.setItem('coderouter-sessions', JSON.stringify(sessions));
+}
+
+function renderSessions() {
+  const sessions = getSessions();
+  if (sessions.length === 0) {
+    return `<div class="empty-state"><div class="icon material-symbols-outlined">history</div><p>No recent sessions yet. Start a conversation to see it here.</p></div>`;
+  }
+  return sessions.map(s => `
+    <div class="session-item" data-id="${s.id}">
+      <div class="title">${escapeHtml(s.title || 'Untitled Session')}</div>
+      <div class="preview">${escapeHtml(s.preview || 'No messages')}</div>
+      <div class="meta">
+        <span>${new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+        <div>
+          <span>${s.count || 0} msgs</span>
+          <button class="delete-btn" onclick="event.stopPropagation(); deleteSession('${s.id}')">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteSession(id) {
+  let sessions = getSessions().filter(s => s.id !== id);
+  saveSession(sessions);
+  panelBody.innerHTML = renderSessions();
+  attachSessionListeners();
+}
+
+function saveCurrentSession() {
+  if (!messages.length) return;
+  const sessions = getSessions();
+  const firstMsg = messages.find(m => m.role === 'user');
+  const existing = sessions.findIndex(s => s.id === currentSessionId);
+  const entry = {
+    id: currentSessionId,
+    title: firstMsg ? firstMsg.text.slice(0, 60) : 'Untitled',
+    preview: firstMsg ? firstMsg.text.slice(0, 100) : '',
+    date: Date.now(),
+    count: messages.length,
+    messages: messages
+  };
+  if (existing >= 0) { sessions[existing] = entry; }
+  else { sessions.unshift(entry); }
+  if (sessions.length > 50) sessions.length = 50;
+  saveSession(sessions);
+}
+
+function attachSessionListeners() {
+  document.querySelectorAll('.session-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const sessions = getSessions();
+      const session = sessions.find(s => s.id === id);
+      if (session && session.messages) {
+        loadSession(session);
+        closePanel();
+      }
+    });
+  });
+}
+
+function loadSession(session) {
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.innerHTML = '';
+  messages = session.messages || [];
+  currentSessionId = session.id;
+  messages.forEach(msg => {
+    addMessageDOM(msg.role, msg.text, msg.model_choice, msg.complexity_score, msg.tokens, msg.cost_saved, msg.cost_incurred);
+  });
+  if (messages.length === 0) resetWelcome();
+  closeMobileMenu();
+}
+
+// ================================
+// SAVED PROMPTS
+// ================================
+function getPrompts() {
+  try { return JSON.parse(localStorage.getItem('coderouter-prompts') || '[]'); } catch { return []; }
+}
+function savePrompts(prompts) {
+  localStorage.setItem('coderouter-prompts', JSON.stringify(prompts));
+}
+
+function renderSavedPrompts() {
+  const prompts = getPrompts();
+  if (prompts.length === 0) {
+    return `<div class="empty-state"><div class="icon material-symbols-outlined">bookmark</div><p>No saved prompts yet. Right-click a message to save it as a prompt.</p></div>`;
+  }
+  return prompts.map((p, i) => `
+    <div class="prompt-item" data-index="${i}">
+      <div class="title">${escapeHtml(p.title || 'Prompt')}</div>
+      <div class="preview">${escapeHtml(p.text ? p.text.slice(0, 120) : '')}</div>
+      <div class="meta" style="margin-top:0.5rem">
+        <button class="delete-btn" onclick="event.stopPropagation(); deletePrompt(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deletePrompt(index) {
+  let prompts = getPrompts();
+  prompts.splice(index, 1);
+  savePrompts(prompts);
+  panelBody.innerHTML = renderSavedPrompts();
+  attachPromptListeners();
+}
+
+function attachPromptListeners() {
+  document.querySelectorAll('.prompt-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.index);
+      const prompts = getPrompts();
+      const p = prompts[idx];
+      if (p && p.text) {
+        document.getElementById('chatInput').value = p.text;
+        autoResize(document.getElementById('chatInput'));
+        closePanel();
+        document.getElementById('chatInput').focus();
+      }
+    });
+  });
+}
+
+// ================================
+// ANALYTICS
+// ================================
+function renderAnalytics() {
+  const stats = getStatsData();
+  const total = stats.total_queries || 0;
+  const local = stats.local_queries || 0;
+  const remote = stats.remote_queries || 0;
+  const saved = stats.total_saved || 0;
+  const spent = stats.total_spent || 0;
+  const pct = total > 0 ? Math.round((local / total) * 100) : 0;
+
+  const history = getStatsHistory();
+  const maxVal = Math.max(...history.map(h => h.total), 1);
+
+  const bars = history.slice(-12).map(h => {
+    const height = Math.max(4, (h.total / maxVal) * 100);
+    const localH = h.total > 0 ? (h.local / h.total) * 100 : 0;
+    return `<div class="bar-item"><div style="height:${height}%;width:100%;position:relative;border-radius:3px 3px 0 0;overflow:hidden;background:var(--color-surface-variant)"><div style="position:absolute;bottom:0;left:0;width:${localH}%;height:100%;background:#c2652a;border-radius:3px 3px 0 0;transition:width 0.6s ease"></div></div><span class="label">${h.label}</span></div>`;
+  }).join('');
+
+  return `
+    <div class="stat-grid" style="margin-bottom:1.5rem">
+      <div class="stat-card"><div class="label">Total Queries</div><div class="value">${total}</div></div>
+      <div class="stat-card"><div class="label">Local</div><div class="value" style="font-size:1.25rem">${local}</div></div>
+      <div class="stat-card"><div class="label">Remote</div><div class="value" style="font-size:1.25rem">${remote}</div></div>
+      <div class="stat-card"><div class="label">Local Rate</div><div class="value">${pct}%</div></div>
+    </div>
+    <div class="stat-card full" style="margin-bottom:1rem">
+      <div class="label">Cost Summary</div>
+      <div style="margin-top:0.5rem">
+        <div class="stat-row" style="display:flex;justify-content:space-between;padding:0.5rem 0"><span style="color:var(--color-on-surface-variant);font-size:0.85rem">Total Saved</span><span style="font-weight:600;color:var(--color-on-surface)">$${saved.toFixed(6)}</span></div>
+        <div class="stat-row" style="display:flex;justify-content:space-between;padding:0.5rem 0;border-top:1px solid var(--color-outline-variant)"><span style="color:var(--color-on-surface-variant);font-size:0.85rem">Total Spent</span><span style="font-weight:600;color:var(--color-on-surface)">$${spent.toFixed(6)}</span></div>
+      </div>
+    </div>
+    ${history.length > 0 ? `<div class="stat-card full"><div class="label">Query History (recent)</div><div class="bar-chart">${bars}</div></div>` : ''}
+    <p style="font-size:0.75rem;color:var(--color-on-surface-variant);text-align:center;margin-top:1rem">Analytics update in real-time as you use the assistant.</p>
+  `;
+}
+
+function getStatsData() {
+  try { return JSON.parse(localStorage.getItem('coderouter-stats') || '{"total_queries":0,"local_queries":0,"remote_queries":0,"total_saved":0,"total_spent":0}'); } catch { return { total_queries: 0, local_queries: 0, remote_queries: 0, total_saved: 0, total_spent: 0 }; }
+}
+
+function getStatsHistory() {
+  try { return JSON.parse(localStorage.getItem('coderouter-stats-history') || '[]'); } catch { return []; }
+}
+
+function recordQuery(model_choice, cost_saved, cost_incurred) {
+  const stats = getStatsData();
+  stats.total_queries += 1;
+  if (model_choice === 'local') stats.local_queries += 1;
+  else stats.remote_queries += 1;
+  stats.total_saved += cost_saved || 0;
+  stats.total_spent += cost_incurred || 0;
+  localStorage.setItem('coderouter-stats', JSON.stringify(stats));
+
+  let history = getStatsHistory();
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const last = history[history.length - 1];
+  if (last && last.label === today) {
+    last.total += 1;
+    if (model_choice === 'local') last.local += 1;
+    else last.remote += 1;
+  } else {
+    history.push({ label: today, total: 1, local: model_choice === 'local' ? 1 : 0, remote: model_choice === 'remote' ? 1 : 0 });
+  }
+  if (history.length > 30) history = history.slice(-30);
+  localStorage.setItem('coderouter-stats-history', JSON.stringify(history));
+}
+
+// ================================
+// SETTINGS
+// ================================
+function renderSettings() {
+  const enterToSend = localStorage.getItem('coderouter-enter-send') !== 'false';
+  const fontSize = localStorage.getItem('coderouter-font-size') || 'medium';
+
+  return `
+    <div class="setting-row">
+      <div class="info">
+        <div class="name">Enter to Send</div>
+        <div class="desc">Press Enter to send, Shift+Enter for new line</div>
+      </div>
+      <div class="toggle-switch ${enterToSend ? 'active' : ''}" onclick="toggleSetting('enter-send')" id="enterSendToggle"></div>
+    </div>
+    <div class="setting-row">
+      <div class="info">
+        <div class="name">Font Size</div>
+        <div class="desc">Adjust chat message font size</div>
+      </div>
+      <select style="background:var(--color-surface-low);border:1px solid var(--color-outline-variant);border-radius:0.5rem;padding:0.4rem 0.75rem;color:var(--color-on-surface);font-family:'Manrope',sans-serif;font-size:0.85rem;outline:none" onchange="setFontSize(this.value)">
+        <option value="small" ${fontSize === 'small' ? 'selected' : ''}>Small</option>
+        <option value="medium" ${fontSize === 'medium' ? 'selected' : ''}>Medium</option>
+        <option value="large" ${fontSize === 'large' ? 'selected' : ''}>Large</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div class="info">
+        <div class="name">Clear All Data</div>
+        <div class="desc">Remove all saved sessions, prompts, and analytics</div>
+      </div>
+      <button class="delete-btn" style="padding:0.5rem 1rem;font-size:0.8rem" onclick="clearAllData()">Clear Data</button>
+    </div>
+  `;
+}
+
+function toggleSetting(key) {
+  const val = localStorage.getItem('coderouter-' + key) !== 'false';
+  localStorage.setItem('coderouter-' + key, (!val).toString());
+  const toggle = document.getElementById('enterSendToggle');
+  if (toggle) toggle.classList.toggle('active');
+}
+
+function setFontSize(size) {
+  localStorage.setItem('coderouter-font-size', size);
+  const sizes = { small: '0.8rem', medium: '0.875rem', large: '1rem' };
+  document.getElementById('chatMessages').style.fontSize = sizes[size] || '0.875rem';
+}
+
+function clearAllData() {
+  if (confirm('Are you sure? This will remove all saved sessions, prompts, and analytics data.')) {
+    localStorage.removeItem('coderouter-sessions');
+    localStorage.removeItem('coderouter-prompts');
+    localStorage.removeItem('coderouter-stats');
+    localStorage.removeItem('coderouter-stats-history');
+    resetStats();
+    panelBody.innerHTML = renderSettings();
+  }
+}
+
+// ================================
+// HELP
+// ================================
+function renderHelp() {
+  return `
+    <div class="help-section">
+      <h3>Getting Started</h3>
+      <p>CodeRouterAI is a cost-aware coding assistant that intelligently routes your queries between local (free) and remote (credits) models based on complexity.</p>
+    </div>
+    <div class="help-section">
+      <h3>Keyboard Shortcuts</h3>
+      <ul>
+        <li><kbd>Enter</kbd> — Send message</li>
+        <li><kbd>Shift</kbd> + <kbd>Enter</kbd> — New line</li>
+        <li><kbd>Esc</kbd> — Close panel</li>
+        <li><kbd>Ctrl</kbd> + <kbd>K</kbd> — Focus input</li>
+      </ul>
+    </div>
+    <div class="help-section">
+      <h3>Features</h3>
+      <ul>
+        <li><strong>Smart Routing</strong> — Queries are analyzed for complexity and routed to the appropriate model.</li>
+        <li><strong>Cost Tracking</strong> — Real-time tracking of savings and spending.</li>
+        <li><strong>Session History</strong> — All conversations are saved and accessible from "Recent Sessions".</li>
+        <li><strong>Saved Prompts</strong> — Save frequently used prompts for quick access.</li>
+        <li><strong>Syntax Highlighting</strong> — Code blocks are automatically highlighted with Prism.js.</li>
+        <li><strong>Dark Mode</strong> — Toggle between light and dark themes using the button in the sidebar.</li>
+      </ul>
+    </div>
+    <div class="help-section">
+      <h3>About</h3>
+      <p>CodeRouterAI v2.0 &mdash; Built with the Sahara design system. Warm minimalism meets intelligent code assistance.</p>
+    </div>
+  `;
+}
+
+// ================================
+// LOGOUT
+// ================================
+function handleLogout() {
+  saveCurrentSession();
+  chatPage.style.opacity = '0';
+  chatPage.style.display = 'none';
+  chatPage.classList.remove('active');
+  authPage.style.display = 'flex';
+  authPage.classList.add('active');
+  document.getElementById('chatMessages').innerHTML = getWelcomeHTML();
+  resetStats();
+  authPage.style.opacity = '1';
+}
+
+document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+document.getElementById('mobileLogoutBtn').addEventListener('click', handleLogout);
+
+// ================================
+// NAVIGATION EVENT BINDING
+// ================================
+function bindNavButtons() {
+  const bind = (id, handler) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', handler);
+  };
+  bind('recentSessionsBtn', () => { openPanel('Recent Sessions', renderSessions()); setTimeout(attachSessionListeners, 50); });
+  bind('savedPromptsBtn', () => { openPanel('Saved Prompts', renderSavedPrompts()); setTimeout(attachPromptListeners, 50); });
+  bind('analyticsBtn', () => openPanel('Analytics', renderAnalytics()));
+  bind('settingsBtn', () => openPanel('Settings', renderSettings()));
+  bind('helpBtn', () => openPanel('Help', renderHelp()));
+  bind('mobileRecentSessionsBtn', () => { closeMobileMenu(); openPanel('Recent Sessions', renderSessions()); setTimeout(attachSessionListeners, 50); });
+  bind('mobileSavedPromptsBtn', () => { closeMobileMenu(); openPanel('Saved Prompts', renderSavedPrompts()); setTimeout(attachPromptListeners, 50); });
+  bind('mobileAnalyticsBtn', () => { closeMobileMenu(); openPanel('Analytics', renderAnalytics()); });
+  bind('mobileSettingsBtn', () => { closeMobileMenu(); openPanel('Settings', renderSettings()); });
+  bind('mobileHelpBtn', () => { closeMobileMenu(); openPanel('Help', renderHelp()); });
+}
+
+bindNavButtons();
+
+// ================================
+// NEW CHAT
+// ================================
+document.getElementById('newChatBtn').addEventListener('click', () => { saveCurrentSession(); resetChat(); });
+document.getElementById('mobileNewChatBtn').addEventListener('click', () => { saveCurrentSession(); closeMobileMenu(); resetChat(); });
+
+function resetChat() {
+  document.getElementById('chatMessages').innerHTML = getWelcomeHTML();
+  messages = [];
+  currentSessionId = Date.now().toString();
+  closeMobileMenu();
+}
+
+function getWelcomeHTML() {
+  return `
+    <div id="welcomeSection" class="flex flex-col items-center justify-center text-center mt-16 mb-8 slide-up">
+      <div class="w-12 h-12 flex items-center justify-center mb-5 bg-primary-container rounded-full">
+        <span class="material-symbols-outlined text-[28px] text-primary">auto_awesome</span>
+      </div>
+      <h2 class="font-headline text-4xl font-bold text-on-surface mb-3 tracking-tight">How can I assist you today?</h2>
+      <p class="text-base text-on-surface-variant max-w-lg font-body">Cost-aware routing between local (free) and remote (credits) models based on complexity.</p>
+    </div>
+    <div id="suggestions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">
+        <div class="flex items-center gap-2 text-on-surface mb-1">
+          <span class="material-symbols-outlined text-[18px] text-primary">code_blocks</span>
+          <span class="font-semibold text-sm">Fibonacci in Python</span>
+        </div>
+        <span class="text-xs text-on-surface-variant">Write a Fibonacci function</span>
+      </button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">
+        <div class="flex items-center gap-2 text-on-surface mb-1">
+          <span class="material-symbols-outlined text-[18px] text-primary">architecture</span>
+          <span class="font-semibold text-sm">SOLID Principles</span>
+        </div>
+        <span class="text-xs text-on-surface-variant">Explain SOLID design principles</span>
+      </button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">
+        <div class="flex items-center gap-2 text-on-surface mb-1">
+          <span class="material-symbols-outlined text-[18px] text-primary">bug_report</span>
+          <span class="font-semibold text-sm">Debug Go Code</span>
+        </div>
+        <span class="text-xs text-on-surface-variant">Index out of range error</span>
+      </button>
+      <button class="suggestion-btn" onclick="sendSuggestion(this)">
+        <div class="flex items-center gap-2 text-on-surface mb-1">
+          <span class="material-symbols-outlined text-[18px] text-primary">api</span>
+          <span class="font-semibold text-sm">REST API Design</span>
+        </div>
+        <span class="text-xs text-on-surface-variant">Design a REST API structure</span>
+      </button>
+    </div>
+  `;
+}
+
+function resetWelcome() {
+  document.getElementById('chatMessages').innerHTML = getWelcomeHTML();
+}
+
+// ================================
+// CHAT FUNCTIONALITY
+// ================================
+const chat = document.getElementById('chatMessages');
+const input = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function autoResize(el) {
+  el.style.height = '';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+// Restore font size
+(function() {
+  const size = localStorage.getItem('coderouter-font-size') || 'medium';
+  const sizes = { small: '0.8rem', medium: '0.875rem', large: '1rem' };
+  chat.style.fontSize = sizes[size];
+})();
+
+input.addEventListener('keydown', (e) => {
+  const enterSend = localStorage.getItem('coderouter-enter-send') !== 'false';
+  if (e.key === 'Enter') {
+    if (enterSend && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    else if (!enterSend && e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault(); input.focus();
+  }
+});
+
+sendBtn.addEventListener('click', sendMessage);
+
+function sendSuggestion(btn) {
+  const titleEl = btn.querySelector('.font-semibold');
+  input.value = titleEl ? titleEl.textContent : btn.textContent.trim();
+  autoResize(input);
+  sendMessage();
+}
+
+function renderMessageText(text) {
+  let parts = [];
+  let lastIndex = 0;
+  const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g;
+  let match;
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    parts.push(text.slice(lastIndex, match.index).replace(/\n/g, '<br>'));
+    const lang = match[1] || '';
+    const code = match[2];
+    parts.push(`<pre><code class="language-${lang}">${escapeHtml(code)}</code></pre>`);
+    lastIndex = match.index + match[0].length;
+  }
+  parts.push(text.slice(lastIndex).replace(/\n/g, '<br>'));
+  let result = parts.join('');
+  result = result.replace(/`([^`]+)`/g, '<code>$1</code>');
+  result = result.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return result;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function addMessageDOM(role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred) {
+  const welcome = document.getElementById('welcomeSection');
+  if (welcome) welcome.style.display = 'none';
+  const sug = document.getElementById('suggestions');
+  if (sug) sug.style.display = 'none';
+
+  const div = document.createElement('div');
+  div.className = `flex w-full mb-4 msg-bubble ${role === 'user' ? 'justify-end' : 'justify-start gap-3'}`;
+
+  if (role === 'assistant') {
+    const avatar = document.createElement('div');
+    avatar.className = 'w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1';
+    avatar.innerHTML = '<span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>';
+    div.appendChild(avatar);
   }
 
-  function addMessage(role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred) {
-    welcome.style.display = 'none';
+  const content = document.createElement('div');
+  content.className = role === 'user' ? 'max-w-[80%]' : 'px-2 py-1 max-w-[85%]';
 
-    const div = document.createElement('div');
-    div.className = `msg ${role}`;
+  const bubble = document.createElement('div');
+  bubble.className = `bubble px-5 py-3.5 ${role === 'user' ? 'msg-user' : 'msg-assistant'}`;
+  bubble.style.borderRadius = '0.5rem';
 
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
+  bubble.innerHTML = renderMessageText(text);
+  content.appendChild(bubble);
 
-    const rendered = text
-      .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
-    bubble.innerHTML = rendered;
-    div.appendChild(bubble);
-
-    if (role === 'assistant' && model_choice) {
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      const isLocal = model_choice === 'local';
-      meta.innerHTML = `<span class="${isLocal ? 'route-local' : 'route-remote'}">${isLocal ? '🟢' : '🔴'}</span> ${isLocal ? 'Local' : 'Remote'} model · ${complexity_score}/5 complexity · ${tokens} tokens · Saved $${cost_saved} · Spent $${cost_incurred}`;
-      div.appendChild(meta);
-    }
-
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+  if (role === 'assistant' && model_choice) {
+    const meta = document.createElement('div');
+    meta.className = 'flex items-center gap-2 mt-2 text-xs text-on-surface-variant';
+    const isLocal = model_choice === 'local';
+    meta.innerHTML = `
+      <span class="${isLocal ? 'text-[#3fb950]' : 'text-[#c0392b]'}">●</span>
+      ${isLocal ? 'Local' : 'Remote'} model
+      <span class="mx-1">·</span> ${complexity_score}/5 complexity
+      <span class="mx-1">·</span> ${tokens} tokens
+      <span class="mx-1">·</span> Saved $${cost_saved}
+      <span class="mx-1">·</span> Spent $${cost_incurred}
+    `;
+    content.appendChild(meta);
   }
 
-  function showTyping() {
-    const div = document.createElement('div');
-    div.className = 'msg typing-indicator';
-    div.id = 'typing-indicator';
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.innerHTML = '<span></span><span></span><span></span>';
-    div.appendChild(bubble);
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-  }
+  div.appendChild(content);
+  chat.appendChild(div);
+  chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
 
-  function removeTyping() {
-    const el = document.getElementById('typing-indicator');
-    if (el) el.remove();
-  }
+  // Highlight code blocks
+  setTimeout(() => {
+    bubble.querySelectorAll('pre code').forEach((block) => {
+      Prism.highlightElement(block);
+    });
+  }, 50);
+}
 
-  function sendSuggestion(btn) {
-    input.value = btn.textContent;
-    sendMessage(new Event('submit'));
-  }
+function addMessage(role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred) {
+  messages.push({ role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred });
+  addMessageDOM(role, text, model_choice, complexity_score, tokens, cost_saved, cost_incurred);
+}
 
-  function handleError(err) {
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'flex w-full justify-start gap-3 mb-4';
+  div.id = 'typingIndicator';
+  const avatar = document.createElement('div');
+  avatar.className = 'w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1';
+  avatar.innerHTML = '<span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>';
+  div.appendChild(avatar);
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble px-5 py-4 msg-assistant flex items-center gap-1.5';
+  bubble.style.borderRadius = '0.5rem';
+  bubble.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  div.appendChild(bubble);
+  chat.appendChild(div);
+  chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage('user', text);
+  input.value = '';
+  input.style.height = '';
+  sendBtn.disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: text })
+    });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+
+    const data = await res.json();
+    removeTyping();
+    const saved = data.cost_saved || 0;
+    const incurred = data.cost_incurred || 0;
+    addMessage(
+      'assistant', data.response, data.model_choice,
+      data.complexity_score, data.tokens,
+      saved.toFixed(6), incurred.toFixed(6)
+    );
+    recordQuery(data.model_choice, saved, incurred);
+    fetchStats();
+    saveCurrentSession();
+  } catch (err) {
     removeTyping();
     const div = document.createElement('div');
-    div.className = 'msg assistant';
-    div.innerHTML = `<div class="bubble">⚠️ <strong>Connection Error</strong><br><br>${err.message}<br><br>Make sure the server is running (<code>python server.py</code>)</div>`;
+    div.className = 'flex w-full justify-start gap-3 mb-4 msg-bubble';
+    div.innerHTML = `
+      <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+        <span class="material-symbols-outlined text-primary text-[24px]">auto_awesome</span>
+      </div>
+      <div class="px-2 py-1 max-w-[85%]">
+        <div class="bubble px-5 py-3.5 msg-assistant" style="border-radius:0.5rem">
+          <strong style="color:var(--color-error)">Connection Error</strong><br><br>
+          ${err.message}<br><br>
+          Make sure the server is running
+        </div>
+      </div>
+    `;
     chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    sendBtn.disabled = false;
-    input.focus();
+    chat.parentElement.scrollTop = chat.parentElement.scrollHeight;
   }
 
-  async function sendMessage(e) {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return false;
+  sendBtn.disabled = false;
+  input.focus();
+}
 
-    addMessage('user', text);
-    input.value = '';
-    sendBtn.disabled = true;
-    showTyping();
+// ================================
+// STATS
+// ================================
+function resetStats() {
+  document.getElementById('statTotal').textContent = '0';
+  document.getElementById('statLocal').textContent = '0';
+  document.getElementById('statRemote').textContent = '0';
+  document.getElementById('statSaved').textContent = '$0.00';
+  document.getElementById('statSpent').textContent = 'Spent: $0.00';
+  document.getElementById('statBar').style.width = '0%';
+  document.getElementById('statPct').textContent = '0%';
+  document.getElementById('statCount').textContent = '0 / 0';
+}
 
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: text })
-      });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+async function fetchStats() {
+  try {
+    const res = await fetch('/api/stats');
+    if (!res.ok) return;
+    const s = await res.json();
+    document.getElementById('statTotal').textContent = s.total_queries;
+    document.getElementById('statLocal').textContent = s.local_queries;
+    document.getElementById('statRemote').textContent = s.remote_queries;
+    document.getElementById('statSaved').textContent = '$' + (s.total_saved || 0).toFixed(6);
+    document.getElementById('statSpent').textContent = 'Spent: $' + (s.total_spent || 0).toFixed(6);
+    const pct = s.total_queries > 0 ? Math.round((s.local_queries / s.total_queries) * 100) : 0;
+    document.getElementById('statBar').style.width = pct + '%';
+    document.getElementById('statPct').textContent = pct + '%';
+    document.getElementById('statCount').textContent = s.local_queries + ' / ' + s.total_queries;
 
-      const data = await res.json();
-      removeTyping();
-      addMessage(
-        'assistant',
-        data.response,
-        data.model_choice,
-        data.complexity_score,
-        data.tokens,
-        data.cost_saved.toFixed(6),
-        data.cost_incurred.toFixed(6)
-      );
-      fetchStats();
-    } catch (err) {
-      handleError(err);
-    }
+    // Sync localStorage stats with server
+    localStorage.setItem('coderouter-stats', JSON.stringify(s));
+  } catch (_) {}
+}
 
-    sendBtn.disabled = false;
-    input.focus();
-    return false;
-  }
-
-  fetchStats();
+fetchStats();
 </script>
 </body>
 </html>
