@@ -504,6 +504,7 @@ tailwind.config = {
               </button>
             </div>
           </div>
+          <div id="authError" class="text-xs text-[#c0392b] font-body mt-2 hidden"></div>
           <button class="btn-primary w-full text-base py-3.5 mt-4" type="submit" id="authSubmit">Get Started</button>
           <p class="text-xs text-center text-secondary font-body mt-4">
             By continuing, you agree to our <a class="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all duration-200" href="#">Terms</a> and <a class="text-primary hover:underline underline-offset-4 decoration-primary/50 transition-all duration-200" href="#">Privacy</a>.
@@ -823,6 +824,7 @@ tabSignUp.addEventListener('click', () => {
   authTitle.textContent = 'Welcome.';
   authSubtitle.textContent = 'Join the curated simplicity of CodeRouterAI.';
   authSubmit.textContent = 'Get Started';
+  clearAuthError();
 });
 
 tabSignIn.addEventListener('click', () => {
@@ -833,6 +835,7 @@ tabSignIn.addEventListener('click', () => {
   authTitle.textContent = 'Welcome back.';
   authSubtitle.textContent = 'Continue your curated AI coding experience.';
   authSubmit.textContent = 'Sign In';
+  clearAuthError();
 });
 
 document.getElementById('navSignIn').addEventListener('click', () => {
@@ -845,9 +848,56 @@ togglePass.addEventListener('click', () => {
   togglePass.querySelector('span').textContent = type === 'password' ? 'visibility_off' : 'visibility';
 });
 
-document.getElementById('authForm').addEventListener('submit', (e) => {
+const authError = document.getElementById('authError');
+function showAuthError(msg) {
+  authError.textContent = msg;
+  authError.classList.remove('hidden');
+}
+function clearAuthError() {
+  authError.textContent = '';
+  authError.classList.add('hidden');
+}
+
+document.getElementById('authForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  transitionToChat();
+  clearAuthError();
+  const emailVal = document.getElementById('email').value.trim();
+  const passwordVal = document.getElementById('password').value;
+  
+  if (!emailVal || !passwordVal) {
+    showAuthError("Email and password are required.");
+    return;
+  }
+
+  const endpoint = isSignUp ? '/api/register' : '/api/login';
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: emailVal, password: passwordVal })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showAuthError(data.error || "Authentication failed.");
+      return;
+    }
+    
+    if (isSignUp) {
+      authError.style.color = '#2ecc71';
+      authError.textContent = "Registration successful! Please sign in.";
+      authError.classList.remove('hidden');
+      setTimeout(() => {
+        authError.style.color = '';
+        tabSignIn.click();
+      }, 1500);
+    } else {
+      localStorage.setItem('coderouter-token', data.token);
+      localStorage.setItem('coderouter-username', data.username);
+      transitionToChat();
+    }
+  } catch (err) {
+    showAuthError("Connection error: " + err.message);
+  }
 });
 
 function transitionToChat() {
@@ -1220,6 +1270,17 @@ function renderHelp() {
 // ================================
 function handleLogout() {
   saveCurrentSession();
+  const token = localStorage.getItem('coderouter-token');
+  if (token) {
+    try {
+      fetch('/api/logout', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (_) {}
+  }
+  localStorage.removeItem('coderouter-token');
+  localStorage.removeItem('coderouter-username');
   chatPage.style.opacity = '0';
   chatPage.style.display = 'none';
   chatPage.classList.remove('active');
@@ -1472,11 +1533,19 @@ async function sendMessage() {
   showTyping();
 
   try {
+    const token = localStorage.getItem('coderouter-token');
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify({ query: text })
     });
+    if (res.status === 401) {
+      handleLogout();
+      throw new Error("Session expired. Please log in again.");
+    }
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
 
     const data = await res.json();
@@ -1531,7 +1600,14 @@ function resetStats() {
 
 async function fetchStats() {
   try {
-    const res = await fetch('/api/stats');
+    const token = localStorage.getItem('coderouter-token');
+    const res = await fetch('/api/stats', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.status === 401) {
+      handleLogout();
+      return;
+    }
     if (!res.ok) return;
     const s = await res.json();
     document.getElementById('statTotal').textContent = s.total_queries;
@@ -1549,7 +1625,15 @@ async function fetchStats() {
   } catch (_) {}
 }
 
-fetchStats();
+// Auto-login and fetch stats on load
+(function() {
+  const token = localStorage.getItem('coderouter-token');
+  if (token) {
+    transitionToChat();
+  } else {
+    resetStats();
+  }
+})();
 </script>
 </body>
 </html>
