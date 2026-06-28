@@ -2,7 +2,7 @@ from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 
-from classifier import classify_complexity
+from agent.classifier import classify_complexity
 from router import route_query
 from local import call_local_model
 from remote import call_remote_model
@@ -10,10 +10,11 @@ from cost_tracker import log_query
 
 load_dotenv()
 
-# ─── State Definition ────────────────────────────────────────────────────────
+# ─── State Definition ─────────────────────────────────────────────────────────
 
 class AgentState(TypedDict):
     query: str
+    user_id: int
     complexity_score: int
     model_choice: str
     response: str
@@ -21,49 +22,63 @@ class AgentState(TypedDict):
     tokens: int
     cost_saved: float
     cost_incurred: float
+    fallback_used: bool
 
 # ─── Node Functions ───────────────────────────────────────────────────────────
 
 def classifier_node(state: AgentState) -> AgentState:
-    """Scores the complexity of the incoming query."""
     score = classify_complexity(state["query"])
     return {**state, "complexity_score": score}
 
 def router_node(state: AgentState) -> AgentState:
-    """Decides local or remote based on complexity score."""
     choice = route_query(state["complexity_score"])
     return {**state, "model_choice": choice}
 
 def local_node(state: AgentState) -> AgentState:
-    """Handles query with local Ollama model."""
     result = call_local_model(state["query"])
-    log_query(state["query"], state["complexity_score"], "local", result)
+    log_query(state["user_id"], state["query"], state["complexity_score"], "local", result)
     return {
         **state,
         "response": result["response"],
         "model_used": result["model_used"],
         "tokens": result["tokens"],
         "cost_saved": result["cost_saved"],
-        "cost_incurred": result["cost_incurred"]
+        "cost_incurred": result["cost_incurred"],
+        "fallback_used": False
     }
 
 def remote_node(state: AgentState) -> AgentState:
-    """Handles query with Fireworks AI remote model."""
-    result = call_remote_model(state["query"])
-    log_query(state["query"], state["complexity_score"], "remote", result)
-    return {
-        **state,
-        "response": result["response"],
-        "model_used": result["model_used"],
-        "tokens": result["tokens"],
-        "cost_saved": result["cost_saved"],
-        "cost_incurred": result["cost_incurred"]
-    }
+    """Handles query with Fireworks AI. Falls back to local if remote fails."""
+    try:
+        result = call_remote_model(state["query"])
+        log_query(state["user_id"], state["query"], state["complexity_score"], "remote", result)
+        return {
+            **state,
+            "response": result["response"],
+            "model_used": result["model_used"],
+            "tokens": result["tokens"],
+            "cost_saved": result["cost_saved"],
+            "cost_incurred": result["cost_incurred"],
+            "fallback_used": False
+        }
+    except Exception as e:
+        print(f"[warning] Remote model failed, falling back to local: {e}")
+        result = call_local_model(state["query"])
+        log_query(state["user_id"], state["query"], state["complexity_score"], "local (fallback)", result)
+        return {
+            **state,
+            "response": result["response"],
+            "model_used": f"{result['model_used']} (fallback)",
+            "tokens": result["tokens"],
+            "cost_saved": result["cost_saved"],
+            "cost_incurred": result["cost_incurred"],
+            "fallback_used": True
+        }
 
 # ─── Routing Logic ────────────────────────────────────────────────────────────
 
 def decide_route(state: AgentState) -> str:
-    return state["model_choice"]  # Returns "local" or "remote"
+    return state["model_choice"]
 
 # ─── Build Graph ──────────────────────────────────────────────────────────────
 
@@ -87,5 +102,4 @@ def build_graph():
 
     return graph.compile()
 
-# Compiled graph — import this in app.py
 coderouter = build_graph()
