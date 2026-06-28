@@ -845,9 +845,36 @@ togglePass.addEventListener('click', () => {
   togglePass.querySelector('span').textContent = type === 'password' ? 'visibility_off' : 'visibility';
 });
 
-document.getElementById('authForm').addEventListener('submit', (e) => {
+document.getElementById('authForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  transitionToChat();
+  const username = document.getElementById('email') 
+    ? document.getElementById('email').value.trim() 
+    : document.getElementById('authEmail') 
+    ? document.getElementById('authEmail').value.trim()
+    : document.querySelector('input[type="email"]').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    if (isSignUp) {
+      const reg = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (!reg.ok) { alert('Registration failed. Username may already exist.'); return; }
+    }
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    if (!res.ok) { alert('Login failed. Check your credentials.'); return; }
+    const data = await res.json();
+    authToken = data.token;
+    transitionToChat();
+  } catch (err) {
+    alert('Connection error. Make sure the server is running.');
+  }
 });
 
 function transitionToChat() {
@@ -1474,7 +1501,10 @@ async function sendMessage() {
   try {
     const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
       body: JSON.stringify({ query: text })
     });
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
@@ -1531,7 +1561,9 @@ function resetStats() {
 
 async function fetchStats() {
   try {
-    const res = await fetch('/api/stats');
+    const res = await fetch('/api/stats', {
+      headers: { 'Authorization': `Bearer ${authToken}` }
+    });
     if (!res.ok) return;
     const s = await res.json();
     document.getElementById('statTotal').textContent = s.total_queries;
