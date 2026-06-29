@@ -6,9 +6,12 @@ venv_site_packages = os.path.abspath(os.path.join(os.path.dirname(__file__), "ve
 if os.path.exists(venv_site_packages):
     sys.path.insert(0, venv_site_packages)
 
-import json
 import secrets
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from fastapi import FastAPI, Header, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
+from pydantic import BaseModel
+import uvicorn
 
 from workflow import coderouter
 from cost_tracker import (
@@ -21,122 +24,90 @@ from cost_tracker import (
 # In-memory session store: maps token -> user_id
 SESSIONS = {}
 
-class ServerHandler(SimpleHTTPRequestHandler):
-    def send_json(self, data, status=200):
-        self.send_response(status)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.end_headers()
-        self.wfile.write(json.dumps(data).encode())
+app = FastAPI(title="CodeRouter AI Backend API")
 
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.end_headers()
+# Enable CORS for cross-origin frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    def get_user_id_from_auth(self):
-        auth_header = self.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            token = auth_header.split(' ')[1]
-            return SESSIONS.get(token)
-        return None
+# Define schemas for POST requests
+class UserAuth(BaseModel):
+    username: str
+    password: str
 
-    def do_GET(self):
-        # ─── API Endpoints ───────────────────────────────────────────────────
-        if self.path == '/api/stats':
-            user_id = self.get_user_id_from_auth()
-            if user_id is None:
-                self.send_json({"error": "Unauthorized"}, 401)
-                return
-            self.send_json(get_session_stats(user_id))
-            return
+class ChatQuery(BaseModel):
+    query: str
 
-        if self.path == '/api/history':
-            user_id = self.get_user_id_from_auth()
-            if user_id is None:
-                self.send_json({"error": "Unauthorized"}, 401)
-                return
-            self.send_json({"history": get_query_history(user_id)})
-            return
+# Dependency to check Authorization token
+def get_current_user_id(authorization: str = Header(None)) -> int:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    token = authorization.split(" ")[1]
+    user_id = SESSIONS.get(token)
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return user_id
 
-        if self.path == '/':
-            self.path = '/code.html'
+# Serve Frontend files
+@app.get("/", response_class=HTMLResponse)
+async def serve_index():
+    return FileResponse("code.html")
 
-        try:
-            return super().do_GET()
-        except (ConnectionAbortedError, ConnectionResetError, BrokenPipeError):
-            # Client disconnected mid-response — safe to ignore
-            pass
+@app.get("/code.html", response_class=HTMLResponse)
+async def serve_code_html():
+    return FileResponse("code.html")
 
-    def do_POST(self):
-        # ─── API Endpoints ───────────────────────────────────────────────────
-        if self.path == '/api/register':
-            length = int(self.headers.get('Content-Length', 0))
-            body = json.loads(self.rfile.read(length))
-            username = body.get("username", "")
-            password = body.get("password", "")
-            
-            if not username or not password:
-                self.send_json({"error": "Username and password are required"}, 400)
-                return
+# API Endpoints
+@app.post("/api/register")
+async def register(auth: UserAuth):
+    if not auth.username or not auth.password:
+        raise HTTPException(status_code=400, detail="Username and password are required")
+    
+    if register_user(auth.username, auth.password):
+        return {"success": True, "message": "User registered successfully"}
+    else:
+        raise HTTPException(status_code=409, detail="Username already exists")
 
-            if register_user(username, password):
-                self.send_json({"success": True, "message": "User registered successfully"})
-            else:
-                self.send_json({"error": "Username already exists"}, 409)
-            return
+@app.post("/api/login")
+async def login(auth: UserAuth):
+    user_id = authenticate_user(auth.username, auth.password)
+    if user_id is not None:
+        token = secrets.token_hex(32)
+        SESSIONS[token] = user_id
+        return {"token": token, "username": auth.username}
+    else:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
 
-        elif self.path == '/api/login':
-            length = int(self.headers.get('Content-Length', 0))
-            body = json.loads(self.rfile.read(length))
-            username = body.get("username", "")
-            password = body.get("password", "")
+@app.post("/api/logout")
+async def logout(authorization: str = Header(None)):
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.split(" ")[1]
+        if token in SESSIONS:
+            del SESSIONS[token]
+    return {"success": True}
 
-            user_id = authenticate_user(username, password)
-            if user_id is not None:
-                token = secrets.token_hex(32)
-                SESSIONS[token] = user_id
-                self.send_json({"token": token, "username": username})
-            else:
-                self.send_json({"error": "Invalid username or password"}, 401)
-            return
+@app.get("/api/stats")
+async def get_stats(user_id: int = Depends(get_current_user_id)):
+    return get_session_stats(user_id)
 
-        elif self.path == '/api/logout':
-            auth_header = self.headers.get('Authorization', '')
-            if auth_header.startswith('Bearer '):
-                token = auth_header.split(' ')[1]
-                if token in SESSIONS:
-                    del SESSIONS[token]
-            self.send_json({"success": True})
-            return
+@app.get("/api/history")
+async def get_history(user_id: int = Depends(get_current_user_id)):
+    return {"history": get_query_history(user_id)}
 
-        elif self.path == '/api/chat':
-            user_id = self.get_user_id_from_auth()
-            if user_id is None:
-                self.send_json({"error": "Unauthorized"}, 401)
-                return
-
-            length = int(self.headers.get('Content-Length', 0))
-            body = json.loads(self.rfile.read(length))
-            query = body.get("query", "")
-            
-            if not query:
-                self.send_json({"error": "Query is required"}, 400)
-                return
-
-            result = coderouter.invoke({"query": query, "user_id": user_id})
-            self.send_json(result)
-            return
-
-        else:
-            self.send_error(404)
+@app.post("/api/chat")
+async def chat(body: ChatQuery, user_id: int = Depends(get_current_user_id)):
+    if not body.query:
+        raise HTTPException(status_code=400, detail="Query is required")
+    
+    result = coderouter.invoke({"query": body.query, "user_id": user_id})
+    return result
 
 if __name__ == '__main__':
     port = 8000
-    server = HTTPServer(('0.0.0.0', port), ServerHandler)
-    print(f'CodeRouter AI server running at http://localhost:{port}')
-    server.serve_forever()
+    print(f'CodeRouter AI server starting at http://localhost:{port}')
+    uvicorn.run(app, host='0.0.0.0', port=port)
