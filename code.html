@@ -5,6 +5,8 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>CodeRouter AI</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-auth-compat.js"></script>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
@@ -517,8 +519,8 @@ tailwind.config = {
               <span class="px-4 bg-surface-container-low text-secondary font-body italic">Or continue with</span>
             </div>
           </div>
-          <div class="mt-5 grid grid-cols-2 gap-4">
-            <button class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container transition-colors duration-200" type="button">
+          <div class="mt-5 flex justify-center">
+            <button class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container transition-colors duration-200" type="button" id="googleBtn">
               <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -526,11 +528,7 @@ tailwind.config = {
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg> Google
             </button>
-            <button class="w-full inline-flex justify-center items-center py-2.5 px-4 border border-outline-variant rounded-lg bg-surface-container-lowest text-sm font-medium text-on-surface hover:bg-surface-container transition-colors duration-200" type="button">
-              <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                <path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"/>
-              </svg> GitHub
-            </button>
+
           </div>
         </div>
       </div>
@@ -551,6 +549,8 @@ tailwind.config = {
     </div>
   </footer>
 </div>
+
+
 
 <!-- ============================== -->
 <!-- CHAT PAGE -->
@@ -642,6 +642,17 @@ tailwind.config = {
           </div>
         </div>
       </nav>
+
+      <!-- User Info Section -->
+      <div class="p-4 mx-4 mb-2 bg-surface-container-low rounded-lg hairline hidden" id="userSection">
+        <div class="flex items-center gap-3">
+          <img class="w-9 h-9 rounded-full object-cover bg-surface-variant" id="userAvatar" src="" alt="">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-on-surface truncate" id="userName"></div>
+            <div class="text-xs text-on-surface-variant truncate" id="userEmail"></div>
+          </div>
+        </div>
+      </div>
 
       <div class="p-6 hairline-t space-y-3 bg-surface">
         <button class="btn-outline w-full text-sm" id="settingsBtn">
@@ -738,6 +749,15 @@ tailwind.config = {
     </button>
   </div>
   <div class="p-6 overflow-y-auto h-[calc(100%-65px)]">
+    <!-- Mobile User Section -->
+    <div class="flex items-center gap-3 px-4 py-3 mb-4 bg-surface-container-low rounded-lg hairline hidden" id="mobileUserSection">
+      <img class="w-8 h-8 rounded-full object-cover bg-surface-variant" id="mobileUserAvatar" src="" alt="">
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium text-on-surface truncate" id="mobileUserName"></div>
+        <div class="text-xs text-on-surface-variant truncate" id="mobileUserEmail"></div>
+      </div>
+    </div>
+
     <button class="flex items-center gap-3 w-full px-4 py-3 bg-on-surface text-surface rounded-md hover:bg-on-surface/90 transition-colors font-body font-medium mb-6" id="mobileNewChatBtn">
       <span class="material-symbols-outlined text-[20px]">add</span>
       <span>New Chat</span>
@@ -847,7 +867,26 @@ togglePass.addEventListener('click', () => {
 
 document.getElementById('authForm').addEventListener('submit', (e) => {
   e.preventDefault();
-  transitionToChat();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  if (!email || !password) return;
+
+  const submitBtn = document.getElementById('authSubmit');
+  const origText = submitBtn.textContent;
+  submitBtn.textContent = 'Please wait...';
+  submitBtn.disabled = true;
+
+  const handler = isSignUp
+    ? auth.createUserWithEmailAndPassword(email, password)
+    : auth.signInWithEmailAndPassword(email, password);
+
+  handler
+    .then(handleFirebaseAuth)
+    .catch((err) => {
+      alert(err.message);
+      submitBtn.textContent = origText;
+      submitBtn.disabled = false;
+    });
 });
 
 function transitionToChat() {
@@ -865,6 +904,97 @@ function transitionToChat() {
   messages = [];
   document.getElementById('chatInput').focus();
 }
+
+// ==============================
+// FIREBASE AUTH
+// ==============================
+const firebaseConfig = {
+  apiKey: "AIzaSyCMf0i_FxzxmB88CZu3h8nFq8HL1VMf4Bo",
+  authDomain: "coderouter-ai.firebaseapp.com",
+  projectId: "coderouter-ai",
+  storageBucket: "coderouter-ai.firebasestorage.app",
+  messagingSenderId: "233581769064",
+  appId: "1:233581769064:web:4d063c5e18fd142d11a6dd",
+  measurementId: "G-LW6GC930RD"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+function updateUserSection(userData) {
+  const section = document.getElementById('userSection');
+  const mobileSection = document.getElementById('mobileUserSection');
+  if (!userData) {
+    section.style.display = 'none';
+    mobileSection.style.display = 'none';
+    return;
+  }
+  const name = userData.displayName || userData.email.split('@')[0];
+  document.getElementById('userName').textContent = name;
+  document.getElementById('userEmail').textContent = userData.email;
+  document.getElementById('mobileUserName').textContent = name;
+  document.getElementById('mobileUserEmail').textContent = userData.email;
+  const avatar = document.getElementById('userAvatar');
+  const mobileAvatar = document.getElementById('mobileUserAvatar');
+  if (userData.photoURL) {
+    avatar.src = userData.photoURL;
+    avatar.style.display = 'block';
+    mobileAvatar.src = userData.photoURL;
+    mobileAvatar.style.display = 'block';
+  } else {
+    avatar.style.display = 'none';
+    mobileAvatar.style.display = 'none';
+  }
+  section.style.display = 'block';
+  mobileSection.style.display = 'flex';
+}
+
+function handleFirebaseAuth(credential) {
+  const user = credential.user;
+  const userData = {
+    uid: user.uid,
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL
+  };
+  localStorage.setItem('coderouter-user', JSON.stringify(userData));
+  updateUserSection(userData);
+  transitionToChat();
+}
+
+// Restore session on page load
+(function() {
+  const saved = localStorage.getItem('coderouter-user');
+  if (saved) {
+    try {
+      const userData = JSON.parse(saved);
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          updateUserSection(userData);
+          transitionToChat();
+        } else {
+          localStorage.removeItem('coderouter-user');
+        }
+      });
+    } catch {}
+  }
+})();
+
+function handleFirebaseError(err) {
+  let msg = err.message;
+  if (err.code === 'auth/popup-closed-by-user') return;
+  if (err.code === 'auth/cancelled-popup-request') return;
+  alert('Auth error: ' + msg);
+}
+
+document.getElementById('googleBtn').addEventListener('click', () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then(handleFirebaseAuth)
+    .catch(handleFirebaseError);
+});
+
+
 
 // ================================
 // MOBILE SIDEBAR
@@ -1220,6 +1350,8 @@ function renderHelp() {
 // ================================
 function handleLogout() {
   saveCurrentSession();
+  auth.signOut();
+  localStorage.removeItem('coderouter-user');
   chatPage.style.opacity = '0';
   chatPage.style.display = 'none';
   chatPage.classList.remove('active');
@@ -1228,6 +1360,8 @@ function handleLogout() {
   document.getElementById('chatMessages').innerHTML = getWelcomeHTML();
   resetStats();
   authPage.style.opacity = '1';
+  document.getElementById('userSection').style.display = 'none';
+  document.getElementById('mobileUserSection').style.display = 'none';
 }
 
 document.getElementById('logoutBtn').addEventListener('click', handleLogout);
