@@ -1,16 +1,41 @@
+import os
+import sys
+import pickle
 import ollama
+
+# Set up paths for site-packages in virtual environment
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+venv_site = os.path.join(ROOT_DIR, "venv", "Lib", "site-packages")
+if os.path.exists(venv_site):
+    sys.path.insert(0, venv_site)
+
+# Path to trained model files
+VECTORIZER_PATH = os.path.join(ROOT_DIR, "router_vectorizer.pkl")
+MODEL_PATH = os.path.join(ROOT_DIR, "router_model.pkl")
 
 def classify_complexity(query: str) -> int:
     """
-    Uses local Ollama model to score task complexity 1-5.
-    Runs locally so classification is always FREE.
-    
-    1 = Trivial: definitions, naming, simple syntax
-    2 = Simple: basic functions, short explanations, minor fixes
-    3 = Moderate: multi-step logic, debugging small snippets
-    4 = Complex: full implementations, architecture, algorithms
-    5 = Expert: system design, optimization, advanced patterns
+    Classifies task complexity 1-5.
+    Tries to load and use the local distilled machine learning model.
+    Falls back to zero-shot Ollama qwen2.5-coder if model files are missing.
     """
+    if os.path.exists(VECTORIZER_PATH) and os.path.exists(MODEL_PATH):
+        try:
+            with open(VECTORIZER_PATH, "rb") as f:
+                vectorizer = pickle.load(f)
+            with open(MODEL_PATH, "rb") as f:
+                model = pickle.load(f)
+
+            # Predict score using TF-IDF and Ridge regression
+            vec = vectorizer.transform([query])
+            pred = model.predict(vec)[0]
+            # Clip predicted score between 1 and 5
+            score = max(1, min(5, int(round(pred))))
+            return score
+        except Exception as e:
+            print(f"[warning] Distilled router failed: {e}. Falling back to Ollama.")
+
+    # Fallback to local Ollama zero-shot complexity classification
     prompt = f"""You are a coding task complexity classifier. Your ONLY job is to output a single digit from 1 to 5.
 
 SCORING RULES:
