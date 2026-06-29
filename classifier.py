@@ -2,45 +2,30 @@ import ollama
 
 def classify_complexity(query: str) -> int:
     """
-<<<<<<< HEAD
-    Uses local Ollama model to score task complexity from 1-5.
-    1-2 = Simple (syntax fix, naming, explanation)
-    3-5 = Complex (generation, debugging, architecture)
-    Runs locally so classification is always FREE.
-    """
-    prompt = f"""You are a task complexity classifier for coding questions.
-Score the following coding query on a scale of 1 to 5.
-
-1 = Very simple (rename variable, fix typo, basic syntax)
-2 = Simple (short explanation, basic logic, small fix)
-3 = Moderate (write a function, debug a snippet)
-4 = Complex (design a module, debug tricky logic)
-5 = Very complex (system architecture, multi-step generation)
-
-Reply with ONLY a single number between 1 and 5. Nothing else.
-
-Query: {query}
-=======
     Uses local Ollama model to score task complexity 1-5.
     Runs locally so classification is always FREE.
     
-    1 = Trivial: definitions, naming, simple syntax
+    1 = Trivial: definitions, naming, simple syntax, general/factual queries
     2 = Simple: basic functions, short explanations, minor fixes
     3 = Moderate: multi-step logic, debugging small snippets
     4 = Complex: full implementations, architecture, algorithms
     5 = Expert: system design, optimization, advanced patterns
     """
-    prompt = f"""You are a coding task complexity classifier. Your ONLY job is to output a single digit from 1 to 5.
+    prompt = f"""You are a task complexity classifier for coding and general queries. Your ONLY job is to output a single digit from 1 to 5.
 
 SCORING RULES:
-1 = Trivial (what is a variable, rename this, fix typo)
-2 = Simple (write hello world, explain a loop, basic syntax fix)
-3 = Moderate (write a function with logic, debug a small snippet, explain an algorithm)
+1 = Trivial (general knowledge, what is a variable, rename this, fix typo, factual questions)
+2 = Simple (write hello world, explain a loop, basic syntax fix, simple non-coding queries)
+3 = Moderate (write a function with logic, debug a snippet, explain an algorithm)
 4 = Complex (build a REST API, implement a data structure, write a class with multiple methods)
 5 = Expert (system architecture, design patterns, performance optimization, security implementation)
 
+CRITICAL RULE:
+- If the query is a general knowledge question, factual query, or non-coding question (e.g. "who invented the GPU", "what is the capital of France"), it MUST be classified as 1 or 2. These do not require complex coding reasoning.
+
 EXAMPLES:
 "what is a list in python" → 1
+"who invented the GPU" → 1
 "write a hello world program" → 1
 "explain what recursion is" → 2
 "write a function to reverse a string" → 2
@@ -56,27 +41,21 @@ OUTPUT RULES:
 - No explanation, no punctuation, no extra text
 
 Query to classify: {query}
->>>>>>> 6a39a5ecb65245f7c79e3584624fad5b5bb47fc9
 Score:"""
 
     try:
         response = ollama.chat(
             model="qwen2.5-coder:1.5b",
-<<<<<<< HEAD
-            options={"temperature": 0},
-            messages=[{"role": "user", "content": prompt}]
-        )
-        score = int(response["message"]["content"].strip()[0])
-        return max(1, min(5, score))  # Clamp between 1-5
-    except Exception:
-        return 3  # Default to moderate if classification fails
-=======
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0}
         )
         raw = response["message"]["content"].strip()
-        score = int(raw[0])
-        return max(1, min(5, score))
-    except Exception:
+        # Find the first digit in the response to be robust
+        for char in raw:
+            if char.isdigit():
+                score = int(char)
+                return max(1, min(5, score))
+        return 3 # Default to moderate if no digit found
+    except Exception as e:
+        print(f"[warning] Classification failed: {e}")
         return 3  # Default to moderate if classification fails
->>>>>>> 6a39a5ecb65245f7c79e3584624fad5b5bb47fc9

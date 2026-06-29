@@ -803,6 +803,15 @@ document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
 let isSignUp = true;
 let currentSessionId = null;
 let messages = [];
+let authToken = null;
+let currentUsername = null;
+
+function applyUserPreferences() {
+  if (!currentUsername) return;
+  const size = localStorage.getItem(`coderouter-font-size-${currentUsername}`) || 'medium';
+  const sizes = { small: '0.8rem', medium: '0.875rem', large: '1rem' };
+  chat.style.fontSize = sizes[size] || '0.875rem';
+}
 
 const authPage = document.getElementById('authPage');
 const chatPage = document.getElementById('chatPage');
@@ -871,6 +880,7 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
     if (!res.ok) { alert('Login failed. Check your credentials.'); return; }
     const data = await res.json();
     authToken = data.token;
+    currentUsername = data.username || username;
     transitionToChat();
   } catch (err) {
     alert('Connection error. Make sure the server is running.');
@@ -888,6 +898,7 @@ function transitionToChat() {
     chatPage.style.opacity = '1';
   });
   fetchStats();
+  applyUserPreferences();
   currentSessionId = Date.now().toString();
   messages = [];
   document.getElementById('chatInput').focus();
@@ -947,10 +958,12 @@ document.addEventListener('keydown', (e) => {
 // RECENT SESSIONS
 // ================================
 function getSessions() {
-  try { return JSON.parse(localStorage.getItem('coderouter-sessions') || '[]'); } catch { return []; }
+  if (!currentUsername) return [];
+  try { return JSON.parse(localStorage.getItem(`coderouter-sessions-${currentUsername}`) || '[]'); } catch { return []; }
 }
 function saveSession(sessions) {
-  localStorage.setItem('coderouter-sessions', JSON.stringify(sessions));
+  if (!currentUsername) return;
+  localStorage.setItem(`coderouter-sessions-${currentUsername}`, JSON.stringify(sessions));
 }
 
 function renderSessions() {
@@ -1029,10 +1042,12 @@ function loadSession(session) {
 // SAVED PROMPTS
 // ================================
 function getPrompts() {
-  try { return JSON.parse(localStorage.getItem('coderouter-prompts') || '[]'); } catch { return []; }
+  if (!currentUsername) return [];
+  try { return JSON.parse(localStorage.getItem(`coderouter-prompts-${currentUsername}`) || '[]'); } catch { return []; }
 }
 function savePrompts(prompts) {
-  localStorage.setItem('coderouter-prompts', JSON.stringify(prompts));
+  if (!currentUsername) return;
+  localStorage.setItem(`coderouter-prompts-${currentUsername}`, JSON.stringify(prompts));
 }
 
 function renderSavedPrompts() {
@@ -1116,21 +1131,24 @@ function renderAnalytics() {
 }
 
 function getStatsData() {
-  try { return JSON.parse(localStorage.getItem('coderouter-stats') || '{"total_queries":0,"local_queries":0,"remote_queries":0,"total_saved":0,"total_spent":0}'); } catch { return { total_queries: 0, local_queries: 0, remote_queries: 0, total_saved: 0, total_spent: 0 }; }
+  if (!currentUsername) return { total_queries: 0, local_queries: 0, remote_queries: 0, total_saved: 0, total_spent: 0 };
+  try { return JSON.parse(localStorage.getItem(`coderouter-stats-${currentUsername}`) || '{"total_queries":0,"local_queries":0,"remote_queries":0,"total_saved":0,"total_spent":0}'); } catch { return { total_queries: 0, local_queries: 0, remote_queries: 0, total_saved: 0, total_spent: 0 }; }
 }
 
 function getStatsHistory() {
-  try { return JSON.parse(localStorage.getItem('coderouter-stats-history') || '[]'); } catch { return []; }
+  if (!currentUsername) return [];
+  try { return JSON.parse(localStorage.getItem(`coderouter-stats-history-${currentUsername}`) || '[]'); } catch { return []; }
 }
 
 function recordQuery(model_choice, cost_saved, cost_incurred) {
+  if (!currentUsername) return;
   const stats = getStatsData();
   stats.total_queries += 1;
   if (model_choice === 'local') stats.local_queries += 1;
   else stats.remote_queries += 1;
   stats.total_saved += cost_saved || 0;
   stats.total_spent += cost_incurred || 0;
-  localStorage.setItem('coderouter-stats', JSON.stringify(stats));
+  localStorage.setItem(`coderouter-stats-${currentUsername}`, JSON.stringify(stats));
 
   let history = getStatsHistory();
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -1143,15 +1161,15 @@ function recordQuery(model_choice, cost_saved, cost_incurred) {
     history.push({ label: today, total: 1, local: model_choice === 'local' ? 1 : 0, remote: model_choice === 'remote' ? 1 : 0 });
   }
   if (history.length > 30) history = history.slice(-30);
-  localStorage.setItem('coderouter-stats-history', JSON.stringify(history));
+  localStorage.setItem(`coderouter-stats-history-${currentUsername}`, JSON.stringify(history));
 }
 
 // ================================
 // SETTINGS
 // ================================
 function renderSettings() {
-  const enterToSend = localStorage.getItem('coderouter-enter-send') !== 'false';
-  const fontSize = localStorage.getItem('coderouter-font-size') || 'medium';
+  const enterToSend = localStorage.getItem(`coderouter-enter-send-${currentUsername}`) !== 'false';
+  const fontSize = localStorage.getItem(`coderouter-font-size-${currentUsername}`) || 'medium';
 
   return `
     <div class="setting-row">
@@ -1183,24 +1201,27 @@ function renderSettings() {
 }
 
 function toggleSetting(key) {
-  const val = localStorage.getItem('coderouter-' + key) !== 'false';
-  localStorage.setItem('coderouter-' + key, (!val).toString());
+  if (!currentUsername) return;
+  const val = localStorage.getItem(`coderouter-${key}-${currentUsername}`) !== 'false';
+  localStorage.setItem(`coderouter-${key}-${currentUsername}`, (!val).toString());
   const toggle = document.getElementById('enterSendToggle');
   if (toggle) toggle.classList.toggle('active');
 }
 
 function setFontSize(size) {
-  localStorage.setItem('coderouter-font-size', size);
+  if (!currentUsername) return;
+  localStorage.setItem(`coderouter-font-size-${currentUsername}`, size);
   const sizes = { small: '0.8rem', medium: '0.875rem', large: '1rem' };
   document.getElementById('chatMessages').style.fontSize = sizes[size] || '0.875rem';
 }
 
 function clearAllData() {
+  if (!currentUsername) return;
   if (confirm('Are you sure? This will remove all saved sessions, prompts, and analytics data.')) {
-    localStorage.removeItem('coderouter-sessions');
-    localStorage.removeItem('coderouter-prompts');
-    localStorage.removeItem('coderouter-stats');
-    localStorage.removeItem('coderouter-stats-history');
+    localStorage.removeItem(`coderouter-sessions-${currentUsername}`);
+    localStorage.removeItem(`coderouter-prompts-${currentUsername}`);
+    localStorage.removeItem(`coderouter-stats-${currentUsername}`);
+    localStorage.removeItem(`coderouter-stats-history-${currentUsername}`);
     resetStats();
     panelBody.innerHTML = renderSettings();
   }
@@ -1353,15 +1374,17 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
 }
 
-// Restore font size
+// Restore font size (runs globally, fallback to medium before login)
 (function() {
-  const size = localStorage.getItem('coderouter-font-size') || 'medium';
+  const size = 'medium';
   const sizes = { small: '0.8rem', medium: '0.875rem', large: '1rem' };
   chat.style.fontSize = sizes[size];
 })();
 
 input.addEventListener('keydown', (e) => {
-  const enterSend = localStorage.getItem('coderouter-enter-send') !== 'false';
+  const enterSend = currentUsername 
+    ? (localStorage.getItem(`coderouter-enter-send-${currentUsername}`) !== 'false')
+    : true;
   if (e.key === 'Enter') {
     if (enterSend && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     else if (!enterSend && e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -1577,7 +1600,9 @@ async function fetchStats() {
     document.getElementById('statCount').textContent = s.local_queries + ' / ' + s.total_queries;
 
     // Sync localStorage stats with server
-    localStorage.setItem('coderouter-stats', JSON.stringify(s));
+    if (currentUsername) {
+      localStorage.setItem(`coderouter-stats-${currentUsername}`, JSON.stringify(s));
+    }
   } catch (_) {}
 }
 

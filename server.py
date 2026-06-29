@@ -1,7 +1,15 @@
-import json
 import os
+import sys
+
+# Automatically load virtual environment site-packages if not already activated
+venv_site_packages = os.path.abspath(os.path.join(os.path.dirname(__file__), "venv", "Lib", "site-packages"))
+if os.path.exists(venv_site_packages):
+    sys.path.insert(0, venv_site_packages)
+
+import json
 import secrets
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+
 from workflow import coderouter
 from cost_tracker import (
     get_session_stats, 
