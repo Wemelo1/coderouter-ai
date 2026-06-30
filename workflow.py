@@ -48,7 +48,7 @@ def local_node(state: AgentState) -> AgentState:
     }
 
 def remote_node(state: AgentState) -> AgentState:
-    """Handles query with Fireworks AI. Falls back to local if remote fails."""
+    """Handles query with Fireworks AI."""
     try:
         result = call_remote_model(state["query"])
         log_query(state["user_id"], state["query"], state["complexity_score"], "remote", result)
@@ -62,17 +62,29 @@ def remote_node(state: AgentState) -> AgentState:
             "fallback_used": False
         }
     except Exception as e:
-        print(f"[warning] Remote model failed, falling back to local: {e}")
-        result = call_local_model(state["query"])
-        log_query(state["user_id"], state["query"], state["complexity_score"], "local (fallback)", result)
+        error_msg = (
+            f"**Error Calling Remote Model**\n\n"
+            f"The task complexity ({state['complexity_score']}/5) exceeds local model capabilities, "
+            f"and the remote model call failed:\n"
+            f"`{str(e)}`\n\n"
+            f"Please check your `FIREWORKS_API_KEY` configuration and try again."
+        )
+        error_result = {
+            "response": error_msg,
+            "model_used": "fireworks-api (failed)",
+            "tokens": 0,
+            "cost_saved": 0.0,
+            "cost_incurred": 0.0
+        }
+        log_query(state["user_id"], state["query"], state["complexity_score"], "remote (failed)", error_result)
         return {
             **state,
-            "response": result["response"],
-            "model_used": f"{result['model_used']} (fallback)",
-            "tokens": result["tokens"],
-            "cost_saved": result["cost_saved"],
-            "cost_incurred": result["cost_incurred"],
-            "fallback_used": True
+            "response": error_msg,
+            "model_used": "fireworks-api (failed)",
+            "tokens": 0,
+            "cost_saved": 0.0,
+            "cost_incurred": 0.0,
+            "fallback_used": False
         }
 
 # ─── Routing Logic ────────────────────────────────────────────────────────────
