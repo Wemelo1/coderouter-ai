@@ -1,23 +1,21 @@
-# Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy requirements.txt first to leverage Docker cache
-COPY requirements.txt .
+# Install curl for healthcheck use in compose
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
+# Install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
+# Copy all source files
 COPY . .
 
-# Expose the port that the application runs on
-EXPOSE 8000
+# Expose server port (server.py) and Streamlit port (app.py)
+EXPOSE 8000 8501
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-
-# Run the backend server
+# Default entrypoint: main web server
 CMD ["python", "server.py"]
