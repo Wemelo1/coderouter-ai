@@ -32,7 +32,7 @@ User Query
 [Router Node] — Score ≤ 2 → Local | Score > 2 → Remote
     ↓
 [Local Model]  → Ollama (qwen2.5-coder) — FREE
-[Remote Model] → Fireworks AI (llama) — Credits, used sparingly
+[Remote Model] → Fireworks AI (glm-5p2) — Credits, used sparingly
     ↓
 Response + Full Cost Breakdown
 ```
@@ -59,7 +59,7 @@ Built on **LangGraph**, the workflow is a stateful multi-node graph where each s
 |---|---|
 | Agent Workflow | LangGraph |
 | Local Model | Ollama (qwen2.5-coder:1.5b) |
-| Remote Model | Fireworks AI (llama-v3p1-8b-instruct) |
+| Remote Model | Fireworks AI (glm-5p2) |
 | Backend Server | Python HTTP Server |
 | Database | SQLite (persistent storage) |
 | Frontend | HTML/CSS/JavaScript |

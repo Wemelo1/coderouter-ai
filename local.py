@@ -3,7 +3,7 @@ import ollama
 LOCAL_MODEL = "qwen2.5-coder:1.5b"
 
 # Approximate cost of equivalent remote call (in USD per 1K tokens)
-REMOTE_COST_PER_1K = 0.0009  # Fireworks AI pricing
+REMOTE_COST_PER_1K = 0.002  # Fireworks AI pricing (blended rate for GLM-5.2)
 
 def call_local_model(query: str) -> dict:
     """

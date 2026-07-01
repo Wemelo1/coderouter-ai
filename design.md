@@ -14,7 +14,7 @@ User Query
 [Router]              — score ≤ 2 → local | score > 2 → remote
     ↓
 [Local Model]         — Ollama (qwen2.5-coder:1.5b) — $0.00
-[Remote Model]        — Fireworks AI (llama4-maverick) — per-token cost
+[Remote Model]        — Fireworks AI (glm-5p2) — per-token cost
     ↓
 Response + Cost Breakdown
 ```
@@ -38,9 +38,9 @@ Response + Cost Breakdown
 
 ### 4. Remote Model (`models/remote.py`)
 - Calls Fireworks AI via OpenAI-compatible API
-- Uses `llama4-maverick-instruct-basic`
+- Uses `glm-5p2`
 - Tracks actual token usage and cost incurred
-- **Cost**: ~$0.0009 per 1K tokens
+- **Cost**: ~$0.002 per 1K tokens
 
 ### 5. Cost Tracker (`utils/cost_tracker.py`)
 - In-memory session log of all queries
