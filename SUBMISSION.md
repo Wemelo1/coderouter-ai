@@ -64,6 +64,7 @@ Built on **LangGraph**, the workflow is a stateful multi-node graph where each s
 | Database | SQLite (persistent storage) |
 | Frontend | HTML/CSS/JavaScript |
 | Auth | Username/password with session management |
+| Containerization | Docker & Docker Compose |
 
 ---
 

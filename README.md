@@ -63,11 +63,18 @@ cp .env.example .env
 streamlit run app.py
 ```
 
+### 6. Run with Docker (Containerized)
+As an alternative to setting up Python locally, you can run CodeRouter AI containerized:
+```bash
+# 1. Start the container
+docker compose up --build
+# 2. Open http://localhost:8000 in your browser
+```
+Note: Ensure your local Ollama instance is running on the host machine.
 
 ---
 
 ## 👥 Team
-
 Built by Team CodeRouter AI for AMD Developer Hackathon ACT II
 ## Now to run app
 python server.py
