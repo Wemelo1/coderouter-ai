@@ -16,7 +16,7 @@ User Query
 [Router] — Score ≤ 2 → Local | Score > 2 → Remote
     ↓
 [Local Model]  → Ollama (qwen2.5-coder:1.5b) — FREE
-[Remote Model] → Fireworks AI (llama4-maverick) — Credits
+[Remote Model] → Fireworks AI (glm-5p2) — Credits
     ↓
 Response + Cost Breakdown
 ```

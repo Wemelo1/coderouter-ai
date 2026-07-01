@@ -1,8 +1,8 @@
 import os
 from openai import OpenAI
 
-FIREWORKS_MODEL = os.getenv("FIREWORKS_MODEL", "accounts/fireworks/models/llama-v3p1-8b-instruct")
-COST_PER_1K_TOKENS = 0.0009  # Fireworks AI pricing (USD)
+FIREWORKS_MODEL = os.getenv("FIREWORKS_MODEL", "accounts/fireworks/models/glm-5p2")
+COST_PER_1K_TOKENS = 0.002  # Fireworks AI pricing (USD, blended rate for GLM-5.2)
 
 def call_remote_model(query: str) -> dict:
     """
