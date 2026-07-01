@@ -1,8 +1,13 @@
 # ⚡ CodeRouter AI
 
-A cost-aware AI coding assistant that intelligently routes tasks between a **local model (Ollama)** and a **remote model (Fireworks AI)** based on task complexity — minimizing cost without sacrificing accuracy.
+> A cost-aware AI coding assistant that intelligently routes tasks between local and remote models based on complexity — minimizing cost without sacrificing accuracy.
 
-Built for the **AMD Developer Hackathon: ACT II** on lablab.ai.
+Built for the **AMD Developer Hackathon: ACT II** on lablab.ai
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
+![LangGraph](https://img.shields.io/badge/LangGraph-Powered-green?style=flat-square)
+![Fireworks AI](https://img.shields.io/badge/Fireworks-AI-orange?style=flat-square)
+![Ollama](https://img.shields.io/badge/Ollama-Local-purple?style=flat-square)
 
 ---
 
@@ -11,29 +16,52 @@ Built for the **AMD Developer Hackathon: ACT II** on lablab.ai.
 ```
 User Query
     ↓
-[Classifier] — Scores complexity 1-5 (runs locally, always free)
+[Classifier] — Scores complexity 1-5 using local model (always free)
     ↓
-[Router] — Score ≤ 2 → Local | Score > 2 → Remote
+Score ≤ 3 → 🟢 Local Model (Ollama) — Free, instant
+Score > 3 → 🔴 Remote Model (Fireworks AI GLM 5.2) — Powerful, used sparingly
     ↓
-[Local Model]  → Ollama (qwen2.5-coder:1.5b) — FREE
-[Remote Model] → Fireworks AI (glm-5p2) — Credits
-    ↓
-Response + Cost Breakdown
+Response + Full Cost Breakdown
 ```
+
+The classifier runs **entirely locally** — so even the routing decision costs zero credits. Only genuinely complex tasks are escalated to the remote model.
+
+---
+
+## ✨ Features
+
+- **Intelligent Routing** — complexity-based decisions, not random assignment
+- **Cost Transparency** — every response shows tokens used, cost saved, and cost incurred
+- **User Authentication** — login/register system with per-user data isolation
+- **Persistent Query History** — SQLite database stores all sessions across restarts
+- **Real-time Analytics** — live dashboard showing local vs remote usage and total savings
+- **Syntax Highlighting** — code responses rendered with full highlighting
+- **Dark/Light Mode** — toggle between themes
+- **FastAPI Backend** — clean REST API architecture
+- **Graceful Error Handling** — descriptive error messages when remote is unavailable
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **LangGraph** — agent workflow orchestration
-- **Ollama** — local model runner (free)
-- **Fireworks AI** — remote model API
-- **Streamlit** — web UI
-- **Python** — core language
+| Layer | Technology |
+|---|---|
+| Agent Workflow | LangGraph |
+| Local Model | Ollama (qwen2.5-coder:1.5b) |
+| Remote Model | Fireworks AI (GLM 5.2) |
+| Backend | FastAPI + Uvicorn |
+| Database | SQLite (persistent storage) |
+| Frontend | HTML / CSS / JavaScript |
+| Authentication | Token-based session management |
 
 ---
 
 ## 🚀 Setup
+
+### Prerequisites
+- Python 3.10+
+- [Ollama](https://ollama.com) installed locally
+- Fireworks AI account with API key
 
 ### 1. Clone the repo
 ```bash
@@ -46,35 +74,76 @@ cd coderouter-ai
 pip install -r requirements.txt
 ```
 
-### 3. Install Ollama + pull model
+### 3. Pull the local model
 ```bash
-# Install from https://ollama.com
 ollama pull qwen2.5-coder:1.5b
 ```
 
-### 4. Set up environment variables
+### 4. Configure environment variables
 ```bash
 cp .env.example .env
-# Add your FIREWORKS_API_KEY to .env
 ```
 
-### 5. Run the app
-```bash
-streamlit run app.py
+Edit `.env` and fill in your values:
+```env
+FIREWORKS_API_KEY=your_fireworks_api_key_here
+OLLAMA_BASE_URL=http://localhost:11434
+FIREWORKS_MODEL=accounts/fireworks/models/glm-5p2
+COMPLEXITY_THRESHOLD=3
 ```
 
-### 6. Run with Docker (Containerized)
-As an alternative to setting up Python locally, you can run CodeRouter AI containerized:
+### 5. Run the server
 ```bash
-# 1. Start the container
-docker compose up --build
-# 2. Open http://localhost:8000 in your browser
+python server.py
 ```
-Note: Ensure your local Ollama instance is running on the host machine.
+
+Open your browser at `http://localhost:8000`
+
+---
+
+## 📁 Project Structure
+
+```
+coderouter-ai/
+├── server.py           ← FastAPI server (entry point)
+├── workflow.py         ← LangGraph routing workflow
+├── classifier.py       ← Complexity scoring (runs locally)
+├── router.py           ← Routing decision logic
+├── remote.py           ← Fireworks AI integration
+├── local.py            ← Ollama integration
+├── cost_tracker.py     ← SQLite logging + session stats
+├── code.html           ← Frontend UI
+├── requirements.txt    ← Python dependencies
+├── .env.example        ← Environment variable template
+└── README.md
+```
+
+---
+
+## 🎯 Complexity Scoring Guide
+
+| Score | Type | Example | Model |
+|---|---|---|---|
+| 1 | Trivial | "what is a variable" | 🟢 Local |
+| 2 | Simple | "write hello world" | 🟢 Local |
+| 3 | Moderate | "write a binary search" | 🟢 Local |
+| 4 | Complex | "build a REST API with JWT" | 🔴 Remote |
+| 5 | Expert | "design a microservices system" | 🔴 Remote |
 
 ---
 
 ## 👥 Team
-Built by Team CodeRouter AI for AMD Developer Hackathon ACT II
-## Now to run app
-python server.py
+
+Built by **Team CodeRouter AI** for AMD Developer Hackathon: ACT II
+
+| Member | Role |
+|---|---|
+| **Wemelo (Pe-MI)** | LangGraph architecture, routing logic, backend |
+| **LJ (SoldierofGod-8)** | Frontend UI, chat interface, design system |
+| **sleepykaneki (debraj7777)** | FastAPI, SQLite database, auth, classifier tuning |
+
+---
+
+## 📄 License
+
+MIT License — feel free to build on this.
