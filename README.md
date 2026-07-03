@@ -74,7 +74,10 @@ Note: Ensure your local Ollama instance is running on the host machine.
 
 ---
 
-## 👥 Team
-Built by Team CodeRouter AI for AMD Developer Hackathon ACT II
-## Now to run app
-python server.py
+## 👥 Team CodeRouter AI
+
+Built for the AMD Developer Hackathon: ACT II on lablab.ai
+
+- **Pr0_M1se** — LangGraph architecture, routing logic, backend
+- **leonard_sesugh_shilgba71** — Frontend UI, chat interface, server integration  
+- **Kaneki** — SQLite database, user authentication, query history
