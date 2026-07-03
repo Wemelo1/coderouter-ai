@@ -125,14 +125,14 @@ User sessions are managed with cryptographically random tokens generated via Pyt
 
 | Member | Role |
 |---|---|
-| **Wemelo (Pe-MI)** | LangGraph architecture, routing logic, backend integration |
-| **LJ (SoldierofGod-8)** | Frontend UI, design system, chat interface |
-| **sleepykaneki (debraj7777)** | FastAPI, SQLite, authentication, classifier tuning, security |
+| **Wemelo (Pr0_M1se)** | LangGraph architecture, routing logic, backend integration |
+| **LJ (leonard_sesugh_shilgba71)** | Frontend UI, design system, chat interface |
+| **sleepykaneki (Kaneki)** | FastAPI, SQLite, authentication, classifier tuning, security |
 
 ---
 
 ## 🔗 Links
-
+- **Demo:**
 - **GitHub:** https://github.com/Wemelo1/coderouter-ai
 - **Track:** Track 1 — AI Workflow Automation Agents
 - **Hackathon:** AMD Developer Hackathon: ACT II on lablab.ai
