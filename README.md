@@ -138,9 +138,9 @@ Built by **Team CodeRouter AI** for AMD Developer Hackathon: ACT II
 
 | Member | Role |
 |---|---|
-| **Pr0_M1se (pr0_M1se)** | LangGraph architecture, routing logic, backend |
-| **leonard_sesugh_shilgba71 (LJ)** | Frontend UI, chat interface, design system |
-| **Kaneki (sleepykaneki)** | FastAPI, SQLite database, auth, classifier tuning |
+| **Pr0_M1se (wemelo1)** | LangGraph architecture, routing logic, backend |
+| **leonard_sesugh_shilgba71 (SoldierofGod-8)** | Frontend UI, chat interface, design system |
+| **Kaneki (debraj7777)** | FastAPI, SQLite database, auth, classifier tuning |
 
 ---
 
