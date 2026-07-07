@@ -9,6 +9,11 @@ from agent.classifier import classify_complexity
 TEST_CASES = [
     "what is the colour of apple",
     "who is the president of oman",
+    "is this movie good or bad",
+    "summarize Mount Everest in one sentence",
+    "extract locations from: Alice visited Paris",
+    "solve for x: 3x + 5 = 20",
+    "solve this logic puzzle: A is older than B, B is older than C. Who is older?",
     "explain what list in python is",
     "write a python function to add two numbers",
     "write a binary search algorithm",

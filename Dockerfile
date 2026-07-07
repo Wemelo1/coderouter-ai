@@ -14,8 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all source files
 COPY . .
 
-# Expose server port (server.py) and Streamlit port (app.py)
-EXPOSE 8000 8501
-
-# Default entrypoint: main web server
-CMD ["python", "server.py"]
+# Default entrypoint: batch runner for evaluation
+CMD ["python", "batch_runner.py"]

@@ -36,27 +36,32 @@ def classify_complexity(query: str) -> int:
             print(f"[warning] Distilled router failed: {e}. Falling back to Ollama.")
 
     # Fallback to local Ollama zero-shot complexity classification
-    prompt = f"""You are a coding task complexity classifier. Your ONLY job is to output a single digit from 1 to 5.
+    prompt = f"""You are a task complexity classifier. Your ONLY job is to output a single digit from 1 to 5.
 
 SCORING RULES:
-1 = Trivial (what is a variable, rename this, fix typo)
-2 = Simple (write hello world, explain a loop, basic syntax fix, simple algorithmic logic like checking primes/Armstrong numbers)
-3 = Moderate (write a function with custom business logic, debug a small snippet, explain an advanced algorithm)
-4 = Complex (build a REST API, implement a data structure, write a class with multiple methods)
-5 = Expert (system architecture, design patterns, performance optimization, security implementation)
+1 = Trivial (simple factual questions, basic sentiment lookup, variable definition, rename this, fix typo)
+2 = Simple (short summarization, basic arithmetic/math reasoning, simple entity extraction, explain recursion/loops)
+3 = Moderate (standard logic puzzles, multi-entity extraction, write a function, debug small snippets, explain algorithms)
+4 = Complex (long text summarization, multi-step math/logic reasoning, build a REST API, implement data structures)
+5 = Expert (complex logic/math puzzles, system architecture design, performance profiling, advanced code optimization)
 
 EXAMPLES:
-"what is a list in python" → 1
-"write a hello world program" → 1
-"explain what recursion is" → 2
+"what is the capital of France" → 1
+"is this review positive: 'I love this product!'" → 1
+"what is the definition of a list in python" → 1
+"summarize the main point of a 1-paragraph text" → 2
+"what is 23 * 45 + 12" → 2
+"extract the city from: 'I live in Paris.'" → 2
+"explain recursion in Python" → 2
+"A is taller than B, B is taller than C. Who is tallest?" → 3
+"extract all names and locations from this 3-paragraph story" → 3
 "write a function to reverse a string" → 2
-"check if a number is prime or Armstrong" → 2
-"debug why my loop runs infinitely" → 3
-"write a binary search algorithm" → 3
-"build a REST API with authentication" → 4
-"implement a linked list with insert and delete" → 4
-"design a microservices architecture for an e-commerce app" → 5
-"optimize this database query for 10 million records" → 5
+"debug why my quicksort loop runs infinitely" → 3
+"solve for x: 3x^2 + 5x - 2 = 0" → 4
+"summarize this 5-page research paper abstract" → 4
+"build a Flask REST API with authentication and SQLite" → 4
+"design a distributed database replication strategy for 10M users" → 5
+"prove that the square root of 2 is irrational" → 5
 
 OUTPUT RULES:
 - Output ONLY a single digit: 1, 2, 3, 4, or 5
@@ -67,7 +72,7 @@ Score:"""
 
     try:
         response = ollama.chat(
-            model="qwen2.5-coder:1.5b",
+            model="gemma2:2b",
             messages=[{"role": "user", "content": prompt}],
             options={"temperature": 0}
         )
