@@ -1,9 +1,9 @@
 import ollama
 
-LOCAL_MODEL = "qwen2.5-coder:1.5b"
+LOCAL_MODEL = "gemma2:2b"
 
 # Approximate cost of equivalent remote call (in USD per 1K tokens)
-REMOTE_COST_PER_1K = 0.002  # Fireworks AI pricing (blended rate for GLM-5.2)
+REMOTE_COST_PER_1K = 0.0009  # Fireworks AI pricing (Gemma-4 31B nvfp4)
 
 def call_local_model(query: str) -> dict:
     """
@@ -15,7 +15,7 @@ def call_local_model(query: str) -> dict:
         messages=[
             {
                 "role": "system",
-                "content": "You are a helpful coding assistant. Answer clearly and concisely."
+                "content": "You are a helpful AI assistant. Answer clearly and concisely."
             },
             {
                 "role": "user",

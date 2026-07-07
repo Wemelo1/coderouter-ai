@@ -22,7 +22,7 @@ def call_remote_model(query: str) -> dict:
         messages=[
             {
                 "role": "system",
-                "content": "You are an expert coding assistant. Provide detailed, accurate answers."
+                "content": "You are a helpful AI assistant skilled in factual Q&A, mathematics, sentiment analysis, text summarization, named entity recognition, logic puzzles, and software engineering. Provide accurate and structured answers."
             },
             {
                 "role": "user",

@@ -1,0 +1,34 @@
+[
+  {
+    "task_id": "t_factual",
+    "prompt": "Who wrote Romeo and Juliet?"
+  },
+  {
+    "task_id": "t_math",
+    "prompt": "If a shirt costs $20 and has a 15% discount, what is the final price?"
+  },
+  {
+    "task_id": "t_sentiment",
+    "prompt": "Classify the sentiment of this text: 'This movie is the worst thing I have ever watched. Absolute waste of time.'"
+  },
+  {
+    "task_id": "t_summarize",
+    "prompt": "Summarize in one short sentence: 'The search for new ways of using solar energy is accelerating. Researchers are building more efficient cells.'"
+  },
+  {
+    "task_id": "t_ner",
+    "prompt": "Extract names and locations from: 'John Smith visited Rome last Wednesday.'"
+  },
+  {
+    "task_id": "t_debug",
+    "prompt": "Identify the bug in this python function:\ndef add_to_list(val, lst=[]):\n    lst.append(val)\n    return lst"
+  },
+  {
+    "task_id": "t_logic",
+    "prompt": "Solve: Alice is taller than Bob. Bob is taller than Charlie. Is Alice taller than Charlie?"
+  },
+  {
+    "task_id": "t_codegen",
+    "prompt": "Write a python function to check if a number is prime."
+  }
+]

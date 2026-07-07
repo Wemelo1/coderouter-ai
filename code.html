@@ -575,7 +575,7 @@ tailwind.config = {
       <div class="p-8 pb-6 flex items-center justify-between">
         <div>
           <h1 class="text-2xl font-headline font-bold tracking-tight text-on-surface">CodeRouterAI</h1>
-          <p class="text-sm text-on-surface-variant mt-0.5">Cost-aware coding assistant</p>
+          <p class="text-sm text-on-surface-variant mt-0.5">Cost-aware multitask assistant</p>
         </div>
         <button class="theme-toggle-btn" id="sidebarThemeToggle" title="Toggle theme">
           <span class="material-symbols-outlined text-[20px]">light_mode</span>
@@ -674,31 +674,31 @@ tailwind.config = {
           <div id="suggestions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
             <button class="suggestion-btn" onclick="sendSuggestion(this)">
               <div class="flex items-center gap-2 text-on-surface mb-1">
-                <span class="material-symbols-outlined text-[18px] text-primary">code_blocks</span>
-                <span class="font-semibold text-sm">Fibonacci in Python</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">calculate</span>
+                <span class="font-semibold text-sm">Solve Math Equation</span>
               </div>
-              <span class="text-xs text-on-surface-variant">Write a Fibonacci function</span>
+              <span class="text-xs text-on-surface-variant">Find derivative of x^2 + 3x</span>
             </button>
             <button class="suggestion-btn" onclick="sendSuggestion(this)">
               <div class="flex items-center gap-2 text-on-surface mb-1">
-                <span class="material-symbols-outlined text-[18px] text-primary">architecture</span>
-                <span class="font-semibold text-sm">SOLID Principles</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">description</span>
+                <span class="font-semibold text-sm">Summarize Article</span>
               </div>
-              <span class="text-xs text-on-surface-variant">Explain SOLID design principles</span>
+              <span class="text-xs text-on-surface-variant">Summarize the history of DNA</span>
             </button>
             <button class="suggestion-btn" onclick="sendSuggestion(this)">
               <div class="flex items-center gap-2 text-on-surface mb-1">
-                <span class="material-symbols-outlined text-[18px] text-primary">bug_report</span>
-                <span class="font-semibold text-sm">Debug Go Code</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">extension</span>
+                <span class="font-semibold text-sm">Logic Puzzle</span>
               </div>
-              <span class="text-xs text-on-surface-variant">Index out of range error</span>
+              <span class="text-xs text-on-surface-variant">Solve the Monty Hall problem</span>
             </button>
             <button class="suggestion-btn" onclick="sendSuggestion(this)">
               <div class="flex items-center gap-2 text-on-surface mb-1">
-                <span class="material-symbols-outlined text-[18px] text-primary">api</span>
-                <span class="font-semibold text-sm">REST API Design</span>
+                <span class="material-symbols-outlined text-[18px] text-primary">code</span>
+                <span class="font-semibold text-sm">Write Python Code</span>
               </div>
-              <span class="text-xs text-on-surface-variant">Design a REST API structure</span>
+              <span class="text-xs text-on-surface-variant">Write a simple web scraper</span>
             </button>
           </div>
         </div>
@@ -711,7 +711,7 @@ tailwind.config = {
               <span class="material-symbols-outlined text-[20px]">attach_file</span>
             </button>
             <div class="flex-1 input-area">
-              <textarea id="chatInput" rows="1" placeholder="Ask a coding question..." oninput="autoResize(this)"></textarea>
+              <textarea id="chatInput" rows="1" placeholder="Ask a question..." oninput="autoResize(this)"></textarea>
             </div>
             <button class="p-2.5 m-1.5 bg-primary text-white rounded-lg shrink-0 flex items-center justify-center hover:bg-[#a85522] transition-colors disabled:opacity-40 disabled:cursor-not-allowed" id="sendBtn">
               <span class="material-symbols-outlined text-[20px]">arrow_upward</span>
@@ -1234,7 +1234,7 @@ function renderHelp() {
   return `
     <div class="help-section">
       <h3>Getting Started</h3>
-      <p>CodeRouterAI is a cost-aware coding assistant that intelligently routes your queries between local (free) and remote (credits) models based on complexity.</p>
+      <p>CodeRouterAI is a cost-aware multitask assistant that intelligently routes your queries between local (free) and remote (credits) models based on complexity.</p>
     </div>
     <div class="help-section">
       <h3>Keyboard Shortcuts</h3>
@@ -1258,7 +1258,7 @@ function renderHelp() {
     </div>
     <div class="help-section">
       <h3>About</h3>
-      <p>CodeRouterAI v2.0 &mdash; Built with the Sahara design system. Warm minimalism meets intelligent code assistance.</p>
+      <p>CodeRouterAI v2.0 &mdash; Built with the Sahara design system. Warm minimalism meets intelligent multitask assistance.</p>
     </div>
   `;
 }
