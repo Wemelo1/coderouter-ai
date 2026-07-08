@@ -18,8 +18,8 @@ User Query
     ↓
 [Classifier] — Scores complexity 1-5 using local model (always free)
     ↓
-Score ≤ 3 → 🟢 Local Model (Ollama) — Free, instant
-Score > 3 → 🔴 Remote Model (Fireworks AI GLM 5.2) — Powerful, used sparingly
+Score ≤ 2 → 🟢 Local Model (Ollama gemma2:2b) — Free, instant
+Score > 2 → 🔴 Remote Model (Fireworks AI gemma-4-31b-it-nvfp4) — Powerful, used sparingly
     ↓
 Response + Full Cost Breakdown
 ```
@@ -47,8 +47,8 @@ The classifier runs **entirely locally** — so even the routing decision costs 
 | Layer | Technology |
 |---|---|
 | Agent Workflow | LangGraph |
-| Local Model | Ollama (qwen2.5-coder:1.5b) |
-| Remote Model | Fireworks AI (GLM 5.2) |
+| Local Model | Ollama (gemma2:2b) |
+| Remote Model | Fireworks AI (gemma-4-31b-it-nvfp4) |
 | Backend | FastAPI + Uvicorn |
 | Database | SQLite (persistent storage) |
 | Frontend | HTML / CSS / JavaScript |
@@ -76,7 +76,7 @@ pip install -r requirements.txt
 
 ### 3. Pull the local model
 ```bash
-ollama pull qwen2.5-coder:1.5b
+ollama pull gemma2:2b
 ```
 
 ### 4. Configure environment variables
@@ -88,7 +88,7 @@ Edit `.env` and fill in your values:
 ```env
 FIREWORKS_API_KEY=your_fireworks_api_key_here
 OLLAMA_BASE_URL=http://localhost:11434
-FIREWORKS_MODEL=accounts/fireworks/models/glm-5p2
+FIREWORKS_MODEL=accounts/fireworks/models/gemma-4-31b-it-nvfp4
 COMPLEXITY_THRESHOLD=3
 ```
 
@@ -107,7 +107,7 @@ Open your browser at `http://localhost:8000`
 coderouter-ai/
 ├── server.py           ← FastAPI server (entry point)
 ├── workflow.py         ← LangGraph routing workflow
-├── classifier.py       ← Complexity scoring (runs locally)
+├── agent/classifier.py ← Complexity scoring (runs locally, 8 task categories)
 ├── router.py           ← Routing decision logic
 ├── remote.py           ← Fireworks AI integration
 ├── local.py            ← Ollama integration
@@ -122,13 +122,15 @@ coderouter-ai/
 
 ## 🎯 Complexity Scoring Guide
 
-| Score | Type | Example | Model |
+The classifier handles **8 task categories**: factual Q&A, math reasoning, sentiment analysis, text summarization, named entity recognition (NER), logic puzzles, code debugging, and code generation.
+
+| Score | Type | Examples | Model |
 |---|---|---|---|
-| 1 | Trivial | "what is a variable" | 🟢 Local |
-| 2 | Simple | "write hello world" | 🟢 Local |
-| 3 | Moderate | "write a binary search" | 🟢 Local |
-| 4 | Complex | "build a REST API with JWT" | 🔴 Remote |
-| 5 | Expert | "design a microservices system" | 🔴 Remote |
+| 1 | Trivial | "what is the capital of France", "is this review positive?" | 🟢 Local |
+| 2 | Simple | "summarize this paragraph", "what is 23 × 45", "extract city from: 'I live in Lagos'" | 🟢 Local |
+| 3 | Moderate | "solve for x: 3x + 5 = 20", "write a function to reverse a string", "A is older than B, B is older than C — who is oldest?" | 🔴 Remote |
+| 4 | Complex | "build a REST API with JWT auth", "summarize this 5-page paper", "debug this recursive function" | 🔴 Remote |
+| 5 | Expert | "design a microservices architecture", "prove the square root of 2 is irrational", "optimize this system for 10M users" | 🔴 Remote |
 
 ---
 
