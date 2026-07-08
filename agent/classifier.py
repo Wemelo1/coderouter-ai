@@ -55,7 +55,7 @@ EXAMPLES:
 "explain recursion in Python" → 2
 "A is taller than B, B is taller than C. Who is tallest?" → 3
 "extract all names and locations from this 3-paragraph story" → 3
-"write a function to reverse a string" → 2
+"write a function to reverse a string" → 3
 "debug why my quicksort loop runs infinitely" → 3
 "solve for x: 3x^2 + 5x - 2 = 0" → 4
 "summarize this 5-page research paper abstract" → 4

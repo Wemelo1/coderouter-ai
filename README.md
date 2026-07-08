@@ -1,6 +1,6 @@
 # ⚡ CodeRouter AI
 
-> A cost-aware AI coding assistant that intelligently routes tasks between local and remote models based on complexity — minimizing cost without sacrificing accuracy.
+> A cost-aware AI multitask assistant that intelligently routes tasks between local and remote models based on complexity — minimizing cost without sacrificing accuracy.
 
 Built for the **AMD Developer Hackathon: ACT II** on lablab.ai
 

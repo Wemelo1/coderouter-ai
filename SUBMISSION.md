@@ -71,7 +71,7 @@ Full theme toggle built into the UI with system preference detection.
 |---|---|---|
 | Agent Workflow | LangGraph | Stateful multi-node routing graph |
 | Local Model | Ollama (gemma2:2b) | Free local inference |
-| Remote Model | Fireworks AI (gemma-4-31b-it-nvfp4) | Powerful remote inference |
+| Remote Model | Fireworks AI (Gemma-4 31B nvfp4) | Powerful remote inference |
 | Backend | HTTP / Streamlit Server | Python web services |
 | Database | SQLite | Persistent storage |
 | Frontend | HTML / CSS / JavaScript | Chat UI with analytics |
