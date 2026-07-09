@@ -3,7 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
-FIREWORKS_MODEL = os.getenv("FIREWORKS_MODEL", "accounts/fireworks/models/llama-v3p1-8b-instruct")
+FIREWORKS_MODEL = os.getenv("FIREWORKS_MODEL", "accounts/fireworks/models/minimax-m3")
 COST_PER_1K_TOKENS = 0.0009  # Fireworks AI pricing (USD)
 
 def call_remote_model(query: str) -> dict:
