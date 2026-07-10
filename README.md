@@ -88,7 +88,7 @@ Edit `.env` and fill in your values:
 ```env
 FIREWORKS_API_KEY=your_fireworks_api_key_here
 OLLAMA_BASE_URL=http://localhost:11434
-FIREWORKS_MODEL=accounts/fireworks/models/gemma-4-31b-it-nvfp4
+FIREWORKS_MODEL=accounts/fireworks/models/minimax-m3
 COMPLEXITY_THRESHOLD=3
 ```
 
@@ -128,7 +128,7 @@ The classifier handles **8 task categories**: factual Q&A, math reasoning, senti
 |---|---|---|---|
 | 1 | Trivial | "what is the capital of France", "is this review positive?" | 🟢 Local |
 | 2 | Simple | "summarize this paragraph", "what is 23 × 45", "extract city from: 'I live in Lagos'" | 🟢 Local |
-| 3 | Moderate | "solve for x: 3x + 5 = 20", "write a function to reverse a string", "A is older than B, B is older than C — who is oldest?" | 🔴 Remote |
+| 3 | Moderate | "solve for x: 3x + 5 = 20", "write a function to reverse a string", "A is older than B, B is older than C — who is oldest?" | 🟢 Local |
 | 4 | Complex | "build a REST API with JWT auth", "summarize this 5-page paper", "debug this recursive function" | 🔴 Remote |
 | 5 | Expert | "design a microservices architecture", "prove the square root of 2 is irrational", "optimize this system for 10M users" | 🔴 Remote |
 
