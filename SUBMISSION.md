@@ -28,7 +28,7 @@ User Query
      ↓
 [Classifier Node] — Scores complexity 1-5 (runs locally, always free)
      ↓
-[Router Node] — Score ≤ 2 → Local | Score > 2 → Remote
+[Router Node] — Score ≤ 3 → Local | Score > 3 → Remote
      ↓
 [Local Model]  → Ollama (gemma2:2b) — FREE
 [Remote Model] → Fireworks AI (minimax-m3) — Credits, used sparingly
@@ -71,7 +71,7 @@ Full theme toggle built into the UI with system preference detection.
 |---|---|---|
 | Agent Workflow | LangGraph | Stateful multi-node routing graph |
 | Local Model | Ollama (gemma2:2b) | Free local inference |
-| Remote Model | Fireworks AI (Gemma-4 31B nvfp4) | Powerful remote inference |
+| Remote Model | Fireworks AI (minimax-m3) | Powerful remote inference |
 | Backend | HTTP / Streamlit Server | Python web services |
 | Database | SQLite | Persistent storage |
 | Frontend | HTML / CSS / JavaScript | Chat UI with analytics |
@@ -90,7 +90,7 @@ In testing, CodeRouter AI routes over **60% of typical multitask queries locally
 |---|---|---|---|
 | 1 | Trivial | 🟢 Local | "what is the capital of France" |
 | 2 | Simple | 🟢 Local | "summarize this passage in a sentence" |
-| 3 | Moderate | 🔴 Remote | "write a python function to check if a number is prime" |
+| 3 | Moderate | 🟢 Local | "write a python function to check if a number is prime" |
 | 4 | Complex | 🔴 Remote | "build a REST API with JWT auth" |
 | 5 | Expert | 🔴 Remote | "design a microservices architecture for an e-commerce platform" |
 
