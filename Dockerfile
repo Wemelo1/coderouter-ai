@@ -2,17 +2,22 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install curl for healthcheck use in compose
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all source files
+# Copy project files
 COPY . .
 
-# Default entrypoint: batch runner for evaluation
-CMD ["python", "batch_runner.py"]
+# Expose port
+EXPOSE 8000
+
+# Environment variables (override at runtime)
+ENV FIREWORKS_API_KEY=""
+ENV FIREWORKS_MODEL="accounts/fireworks/models/minimax-m3"
+ENV LOCAL_MODEL="gemma2:2b"
+ENV COMPLEXITY_THRESHOLD=3
+ENV OLLAMA_BASE_URL="http://host.docker.internal:11434"
+
+# Start server
+CMD ["python", "server.py"]
