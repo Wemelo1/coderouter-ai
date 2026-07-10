@@ -31,7 +31,7 @@ User Query
 [Router Node] — Score ≤ 2 → Local | Score > 2 → Remote
      ↓
 [Local Model]  → Ollama (gemma2:2b) — FREE
-[Remote Model] → Fireworks AI (gemma-4-31b-it-nvfp4) — Credits, used sparingly
+[Remote Model] → Fireworks AI (minimax-m3) — Credits, used sparingly
      ↓
 Response + Full Cost Breakdown
 ```
