@@ -31,7 +31,7 @@ User Query
 [Router Node] — Score ≤ 2 → Local | Score > 2 → Remote
      ↓
 [Local Model]  → Ollama (gemma2:2b) — FREE
-[Remote Model] → Fireworks AI (gemma-4-31b-it-nvfp4) — Credits, used sparingly
+[Remote Model] → Fireworks AI (MiniMax M3) — Credits, used sparingly
      ↓
 Response + Full Cost Breakdown
 ```
@@ -71,7 +71,7 @@ Full theme toggle built into the UI with system preference detection.
 |---|---|---|
 | Agent Workflow | LangGraph | Stateful multi-node routing graph |
 | Local Model | Ollama (gemma2:2b) | Free local inference |
-| Remote Model | Fireworks AI (Gemma-4 31B nvfp4) | Powerful remote inference |
+| Remote Model | Fireworks AI (MiniMax M3) | Powerful remote inference for complex tasks |
 | Backend | HTTP / Streamlit Server | Python web services |
 | Database | SQLite | Persistent storage |
 | Frontend | HTML / CSS / JavaScript | Chat UI with analytics |
