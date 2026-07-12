@@ -25,6 +25,9 @@ from cost_tracker import (
 SESSIONS = {}
 
 app = FastAPI(title="CodeRouter AI Backend API")
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 # Enable CORS for cross-origin frontend requests
 app.add_middleware(

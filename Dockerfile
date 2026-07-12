@@ -21,3 +21,8 @@ ENV OLLAMA_BASE_URL="http://host.docker.internal:11434"
 
 # Start server
 CMD ["python", "server.py"]
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+
+CMD ["python", "server.py"]
